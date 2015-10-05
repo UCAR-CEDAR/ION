@@ -1,0 +1,33 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+    </ION_HEADER>
+
+    <ION_BODY> 
+	<BR>
+	<TABLE ALIGN="CENTER" border='4'  cellpadding=3>
+	    <TR>
+		<TH colspan='3'>Start by deciding to create a plot, selecting an instrument, or selecting a date in which you are interested.</TH>
+	    </TR>
+	    <TR>
+		<TD WIDTH="33%" align=center>
+		    <ION_FORM NAME="PLOTTING" METHOD="POST" >
+			<INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+			<ION_BUTTON onClick="submitClick('PLOTTING','GOTO_P')" EVENT="SELECT" TYPE="BUTTON" LABEL="        Create a Plot       " />
+		    </ION_FORM>
+		</TD>
+		<TD WIDTH="34%" align=center>
+		    <ION_FORM NAME="INSTRUMENT" METHOD="POST" >
+			<INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+			<ION_BUTTON onClick="submitClick('INSTRUMENT','GOTO_I')" EVENT="SELECT" TYPE="BUTTON" LABEL="Select an Instrument" />
+		    </ION_FORM>
+		</TD>
+		<TD WIDTH="33%" align=center>
+		    <ION_FORM NAME="CALENDAR" METHOD="POST" >
+			<INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+			<ION_BUTTON onClick="submitClick('CALENDAR','GOTO_C')" EVENT="SELECT" TYPE="BUTTON" LABEL="       Select a date       "/>
+		    </ION_FORM>
+		</TD>
+	    </TR>
+	</TABLE>
+    </ION_BODY>
+</ION_SCRIPT>

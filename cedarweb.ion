@@ -1,0 +1,798 @@
+<ION_SCRIPT>
+
+<ION_HEADER>
+ <AUTHOR>David Helwig, Peter Fox, Jose Garcia and Jimin Wang</AUTHOR>
+ <TITLE>CEDARWEB 3.0</TITLE>
+ <APPLICATION>CEDARWEB 3.0 ION SCRIPT Navigation, Data Selection and Plotting</APPLICATION>
+ <COPYRIGHT>UCAR, 2006</COPYRIGHT>
+ <DATE>Wed Oct 10 09:11:26 MDT 2001</DATE>
+ <!-- This is the output from the unix data command, cut and paste -->
+ <LASTUPDATE>Fri May 26 11:49:00 MDT 2006</LASTUPDATE>
+ <!-- Last update PAF -->
+ <VARIABLES>
+  <VARIABLE_DECL NAME="INSTR" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="RTS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="PARAMS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="PLOT" VALUE="FALSE" TYPE="BOOL" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="MINS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="MAXS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="LABELS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="ONOFFS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="SDT" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="EDT" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="NUMP" VALUE="0" TYPE="INT" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="STARTING" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="DAY" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+  <VARIABLE_DECL NAME="ENDING" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="IV" VALUE="0" TYPE="INT" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="RV" VALUE="0" TYPE="INT" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="PV" VALUE="0" TYPE="INT" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="NOERROR" VALUE="1" TYPE="INT" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="NOUNDEF" VALUE="2" TYPE="INT" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="FILENAME" VALUE="'/default'" TYPE="STR" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="OFILE" VALUE="''" TYPE="STR" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="PAGE" VALUE="ion:///cedar.ion" TYPE="STR" PERSIST="TRUE"/>
+  <VARIABLE_DECL NAME="DIRC" TYPE="INT" VALUE="0" PERSIST="TRUE" />
+  <VARIABLE_DECL NAME="DIRW" TYPE="INT" VALUE="0" PERSIST="TRUE" />
+  <VARIABLE_DECL NAME="DIRD" TYPE="INT" VALUE="0" PERSIST="TRUE" />
+  <VARIABLE_DECL NAME="DIRT" TYPE="INT" VALUE="0" PERSIST="TRUE" />
+  <VARIABLE_DECL NAME="DIRO" TYPE="INT" VALUE="0" PERSIST="TRUE" />
+  <VARIABLE_DECL NAME="DIRH" TYPE="INT" VALUE="0" PERSIST="TRUE" />
+  <VARIABLE_DECL NAME="CedarUser" TYPE="STR" VALUE="undef" PERSIST="TRUE" />
+ </VARIABLES>
+ <EVENTS>
+   <EVENT_DECL NAME="HTMLPAGE" ACTION="ion:///cedarweb.ion"/>
+   <EVENT_DECL NAME="SELECT" ACTION="ion:///cedarweb.ion"/>
+   <EVENT_DECL NAME="EXPAND" ACTION="ion:///cedarweb.ion"/>
+   <EVENT_DECL NAME="CREATE_PLOT" ACTION="ion:///cedarweb.ion"/>
+   <EVENT_DECL NAME="PRINT_PLOT" ACTION="ion:///cedarweb.ion"/>
+   <EVENT_DECL NAME="REPLOT" ACTION="ion:///cedarweb.ion"/>
+   <EVENT_DECL NAME="GOTO_L" ACTION="ion:///login.ion" />	
+ </EVENTS>
+ <!-- to do - include DC metatags -->
+ <!-- add class="menuitems" to ul -->
+ <!--  STYLE type="text/css" -->
+ <!--  UL.menuitems { list-style-type: circle } -->
+ <!--  OL.menuitems { list-style-type: lower-roman } -->
+ <!--  /STYLE -->
+ <!--  -->
+ <LINK REL="stylesheet" TYPE="text/css" HREF="/cedar.css">
+ <SCRIPT LANGUAGE="JavaScript" SRC="/cedarplot.js"></SCRIPT>
+</ION_HEADER>
+
+<ION_BODY BACKGROUND="/images/Texture_lt_gray_004.jpg" TEXT="black">
+<!-- This table is for the banner -->
+
+<TABLE BACKGROUND='/images/Texture_lt_gray_004.jpg' BORDER='0' WIDTH='1000' CELLPADDING='1' CELLSPACING='0'>
+
+<TR>
+
+<!-- This table column entry contains the UCAR link - load in a new window -->
+
+<TD WIDTH='10%' BACKGROUND='/images/Texture_lt_gray_004.jpg' >
+<P ALIGN='center'>
+    <A HREF="http://www.ucar.edu" TARGET="_blank">
+	<IMG BORDER='0' SRC='/images/CedarwebUCAR.gif' ALT='UCAR'><BR>
+	<FONT SIZE="2">UCAR</FONT>
+    </A>
+</P>
+</TD>
+
+<!-- This table column entry contains the cedarweb image -->
+
+<TD WIDTH='60%' BACKGROUND='/images/Texture_lt_gray_004.jpg' >
+<P ALIGN='center'>
+ <IMG BORDER='0' SRC='/images/Cedarweb.jpg' ALT='Refresh CEDARweb'>
+</P>
+
+<ION_IF EXPR="$Form.LOGIN NE 'undef'">
+   <ION_EVALUATE EXPR="$LOGIN=$Form.LOGIN" DISPLAY="FALSE"/>
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$LOGIN='Logout'" DISPLAY="FALSE"/>
+</ION_IF> 
+
+</TD>
+
+<!-- This table column entry is for CEDARWEB reload -->
+
+<TD WIDTH='10%' BACKGROUND='/images/Texture_lt_gray_004.jpg' ><P ALIGN='center'>
+<A HREF='/index.html'><IMG SRC='/images/cedar.gif' BORDER='0' ALT='CEDAR'><BR><FONT SIZE="2">CEDAR</FONT></A><BR>
+<!--<A HREF="/cedar.html" TARGET="_blank">
+<font SIZE="1">Old CEDARWEB</font></A>-->
+</P>
+
+</TD>
+
+<!-- This table column entry is for SPARC in a new window -->
+
+<TD WIDTH='15%' BACKGROUND='/images/Texture_lt_gray_004.jpg' >
+    <P ALIGN='center'>
+	<!--<A HREF="http://www.si.umich.edu/sparc/" TARGET="_blank">-->
+	    <IMG SRC="/images/sparc-logo.gif" BORDER='0' ALT="SPARC logo">
+	    <BR>
+	    <FONT SIZE="2">SPARC</FONT>
+	<!--</A>-->
+    </P>
+</TD>
+</TR>
+</TABLE>
+
+<!-- This block is to load Form.* variables into persistent variables for the
+     remainder of the script -->
+
+<!-- Need to normalize this - PAF -->
+
+<ION_EVALUATE EXPR="$PAGE=$Form.PAGE" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$IV=$Form.IV" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$PV=$Form.PV" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$RV=$Form.RV" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$NOERROR=$Form.NOERROR" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$NOUNDEF=$Form.NOUNDEF" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIRD=$Form.DIRD" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIRC=$Form.DIRC" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIRW=$Form.DIRW" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIRT=$Form.DIRT" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIRH=$Form.DIRH" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIRO=$Form.DIRO" DISPLAY="FALSE"/>	
+<ION_EVALUATE EXPR="$DIR=$DIRC+2*$DIRW+4*$DIRD+8*$DIRT+16*$DIRO+32*$DIRH" DISPLAY="FALSE"/>
+
+
+<ION_IF EXPR="$Form.Iverbosity NE 'undef' AND $Form.Iverbosity NE ''">
+    <ION_EVALUATE EXPR="$IV=$Form.Iverbosity" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Rverbosity NE 'undef' AND $Form.Rverbosity NE ''">
+    <ION_EVALUATE EXPR="$RV=$Form.Rverbosity" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Pverbosity NE 'undef' AND $Form.Pverbosity NE ''">
+    <ION_EVALUATE EXPR="$PV=$Form.Pverbosity" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Pfilter NE 'undef' AND $Form.Pfilter NE ''">
+    <ION_EVALUATE EXPR="$PFILTER=$Form.Pfilter" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Instruments NE 'undef' AND $Form.Instruments NE ''">
+    <ION_EVALUATE EXPR="$INST=$Form.Instruments" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Instruments EQ 'blah'">
+     <ION_EVALUATE EXPR="$INST='undef'" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Record_Type NE 'undef' AND $Form.Record_Type NE ''">
+    <ION_EVALUATE EXPR="$RTS=$Form.Record_Type" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Record_Type EQ 'blah'">
+     <ION_EVALUATE EXPR="$RTS='undef'" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Start NE 'undef' AND $Form.Start NE ''">
+    <ION_EVALUATE EXPR="$STARTING=$Form.Start" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_IF EXPR="$Form.Ender NE 'undef' AND $Form.Ender NE ''">
+    <ION_EVALUATE EXPR="$ENDING=$Form.Ender" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_EVALUATE EXPR="$OFILE=$FILENAME"/>
+<ION_EVALUATE EXPR="$FILENAME=$ION.temp+'params'+$ION.uniqueID" DISPLAY="FALSE" />
+
+<!-- End block to load Form.* variables -->
+
+<!-- This part saves a copy of current parameters of the session in a file -->
+
+<ION_DATA_OUT PRE="FALSE">
+   <IDL>
+      .r cedar_catalog_setup
+      cedar_catalog_setup
+      .r holdparams
+      holdparams,'$Browser.QUERY_STRING',parameters,'$INSTR','$RTS','$STARTING','$ENDING','$Document.EVENT','$OFILE','$FILENAME'
+    </IDL>
+</ION_DATA_OUT>
+
+<!-- End part to save a copy of current parameters -->
+
+<!-- This table is for the navigation and content portions of the pages -->
+
+<TABLE BACKGROUND='/images/Texture_lt_gray_004.jpg' BORDER='0' WIDTH='1000' CELLPADDING='1' CELLSPACING='1'>
+
+<!-- Only one row -->
+
+<TR>
+
+<!-- Left column is for navigation -->
+
+<TD VALIGN='TOP' WIDTH='200' BACKGROUND='/images/Texture_lt_gray_004.jpg' >
+
+ <!-- ION_INCLUDE SRC="ion:///menunew.ion" ASTEXT="FALSE" PRE="FALSE" / -->
+
+ <!-- Logged in/Not logged in -->
+
+    <ION_IF EXPR="$Document.EVENT EQ 'DIFFUSER'">
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+		.r cedar_authentication_setup.pro
+		cedar_authentication_setup	
+		.r logout.pro
+		result=cedar_logout('$Form.CedarUser', '$Browser.REMOTE_ADDR')
+	    </IDL>
+	</ION_DATA_OUT>
+	<SCRIPT LANGUAGE="JavaScript">
+	    <!--
+	    var theCookie = "OpenDAP.remoteuser=undef; domain=cedarweb.hao.ucar.edu; path=/; expires=Fri, 31 Dec 1999 23:59:59 GMT;" ;
+	    document.cookie = theCookie ;
+	    //-->
+	</SCRIPT>
+	<ION_EVALUATE EXPR="$CedarUser='undef'" DISPLAY="FALSE" />
+    <ION_ELSEIF EXPR="$Document.EVENT EQ 'LOGOUT'" />
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+		.r cedar_authentication_setup.pro
+		cedar_authentication_setup	
+		.r logout.pro
+		result=cedar_logout('$Form.CedarUser', '$Browser.REMOTE_ADDR')
+	    </IDL>
+	</ION_DATA_OUT>
+	<SCRIPT LANGUAGE="JavaScript">
+	    <!--
+	    var theCookie = "OpenDAP.remoteuser=undef; domain=cedarweb.hao.ucar.edu; path=/; expires=Fri, 31 Dec 1999 23:59:59 GMT;" ;
+	    document.cookie = theCookie ;
+	    //-->
+	</SCRIPT>
+	user <SPAN STYLE="color:red;"><ION_VARIABLE NAME="$Form.CedarUser" /></SPAN> signed out!
+	<ION_EVALUATE EXPR="$CedarUser='undef'" DISPLAY="FALSE" />
+    </ION_IF>
+    <SCRIPT LANGUAGE="JavaScript">
+	<!--
+	var theCookie = document.cookie ;
+	var cookieHeader = "OpenDAP.remoteuser=" ;
+	var cookieStart = theCookie.indexOf( cookieHeader ) ;
+	if( cookieStart != -1 )
+	{
+	    var currCookie = theCookie.substring( cookieStart + cookieHeader.length ) ;
+	    var cookieEnd = currCookie.indexOf( ";" ) ;
+	    if( cookieEnd != -1 )
+	    {
+		var cookieVal = currCookie.substring( 0, cookieEnd ) ;
+	    }
+	    else
+	    {
+		var cookieVal = currCookie ;
+	    }
+
+	    document.writeln( "You are logged in as: <B>", cookieVal, "</B>" ) ;
+	    document.writeln( "<BR />" ) ;
+	    document.writeln( "If you are not ", cookieVal, ", <A HREF=\"/cgi-bin/ion-p?DIFFUSER=Diff+User&CedarUser=", cookieVal, "&ION__E1=DIFFUSER%3Aion%3A%2F%2F%2Fcedarweb.ion\">click here</A>" ) ;
+	    document.writeln( "<BR />" ) ;
+	    document.writeln( "<A HREF=\"/cgi-bin/ion-p?LOGOUT=Sign+Out&CedarUser=", cookieVal, "&ION__E1=LOGOUT%3Aion%3A%2F%2F%2Fcedarweb.ion\">Sign Out</A>" ) ;
+	    document.writeln( "<BR />" ) ;
+	    document.writeln( "<BR />" ) ;
+	}
+	else
+	{
+	    document.writeln( "<FORM ACTION=\"/cgi-bin/ion-p\" NAME=\"form_login\" TARGET=\"NEW\">" ) ;
+	    document.writeln( "    <INPUT NAME=\"GOTO_L\" VALUE=\"Sign In\" TYPE=\"SUBMIT\" />" ) ;
+	    document.writeln( "    <INPUT TYPE=\"HIDDEN\" NAME=\"ION__E1\" VALUE=\"GOTO_L:ion:///login.ion\" />" ) ;
+	    document.writeln( "</FORM>" ) ;
+	    document.writeln( "<BR />" ) ;
+	    document.writeln( "<BR />" ) ;
+	}
+	//-->
+    </SCRIPT>
+    <NOSCRIPT>
+	CedarWeb sign in uses JavaScript. Please enable JavaScript and refresh this page.
+    </NOSCRIPT>
+
+<!-- This next part of the column holds the folder hierarchy, open/closed -->
+
+<!-- Home -->
+
+ <IMG SRC="/images/home03.gif" ALT="Home"><A HREF="/index.html"><FONT SIZE="3">Home</FONT></A><BR>
+ 
+<!-- Community -->
+
+ <ION_IF EXPR="$DIRC EQ 0">
+   <IMG SRC="/icons/folder.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRC" VALUE1="1" 
+             NAME2="PAGE" VALUE2="ion:///community/index.ion" >
+   <FONT SIZE="3"> Community</FONT></ION_LINK><BR>
+ <ION_ELSE />
+   <IMG SRC="/icons/folder.open.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRC" VALUE1="0" >
+             <!-- NAME2="PAGE" VALUE2="ion:///community/index.ion" -->
+   <FONT SIZE="3"> Community</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Calendar"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/calendar.html">
+   <FONT SIZE="2">Calendar</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="POST Link"> 
+   <!-- A HREF="/community/POST_current.pdf" TARGET="cedarweb_aux" -->
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/CEDARPOST.html">
+   <FONT SIZE="2">CEDAR POST</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="DASI Report">&nbsp;<A HREF="/community/DASI_Report_lo-res.pdf" TARGET="cedarweb_aux"><FONT SIZE="2">DASI Report</FONT></A><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="CSSC Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/csscnow.html">
+   <FONT SIZE="2">CSSC</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Document Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/documents.ion">
+   <FONT SIZE="2">Documents</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Mail List Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/maillists.html">
+    <FONT SIZE="2">Mailing lists</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="AO Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/opportunities.html">
+   <FONT SIZE="2">Opportunities</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Presentations"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/presentations/index.ion">
+   <FONT SIZE="2">Presentations</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="TIMED Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///timed/timed.html">
+   <FONT SIZE="2">TIMED</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="URLs Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/urls.html">
+   <FONT SIZE="2">URLs</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Whats New Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/whatsnew.ion">
+   <FONT SIZE="2">What's new</FONT></ION_LINK><BR>
+
+<!--
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Otherdocs"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/other.html">
+   <FONT SIZE="2">Other documents</FONT></ION_LINK><BR>
+   -->
+
+ </ION_IF>
+
+<!-- Workshop -->
+
+ <ION_IF EXPR="$DIRW EQ 0">
+   <IMG SRC="/icons/folder.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRW" VALUE1="1" 
+             NAME2="PAGE" VALUE2="ion:///workshop/workshop.html" >
+   <FONT SIZE="3"> Workshop</FONT></ION_LINK><BR>
+ <ION_ELSE />
+   <IMG SRC="/icons/folder.open.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRW" VALUE1="0" >
+   <FONT SIZE="3"> Workshop</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Accommodation"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/accommodation.html">
+   <FONT SIZE="2">Accommodation</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Agenda"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/agenda.html">
+   <FONT SIZE="2">Agenda</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Deadlines"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/deadlines.html">
+   <FONT SIZE="2">Deadlines</FONT></ION_LINK><BR>
+
+   <!--
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Local"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/local.html">
+   <FONT SIZE="2">Local information</FONT></ION_LINK><BR>
+   -->
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Plans"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/meetingplans.html" >
+   <FONT SIZE="2">Meeting Plans</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Participant">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/participants.html">
+   <FONT SIZE="2">Participants</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Workshops"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/pmworkshops.html">
+   <FONT SIZE="2">Workshops</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Posters"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/posters.html">
+   <FONT SIZE="2">Posters</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Poster competition"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/post-comp.html">
+   <FONT SIZE="2">Poster competition</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Prize Lecture"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/prize.html">
+   <FONT SIZE="2">Prize Lecture</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Register"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/register.html">
+   <FONT SIZE="2">Register</FONT></ION_LINK><BR>
+
+   <!--
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Support"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/support.html">
+   <FONT SIZE="2">Request support</FONT></ION_LINK><BR>
+   -->
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Students"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/students.html">
+   <FONT SIZE="2">Students</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Student bios"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/bios.html">
+   <FONT SIZE="2">Student bio</FONT></ION_LINK><BR>
+
+   <!--
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Submit"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/submit.html">
+   <FONT SIZE="2">Submit abstract</FONT></ION_LINK><BR>
+   -->
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Tutorials"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///workshop/videolist.html">
+   <FONT SIZE="2">Tutorials</FONT></ION_LINK><BR>
+
+   <!--
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Abstracts"> 
+   <A HREF="/workshop/abstracts.ps" TARGET="cedarweb_aux">
+   <FONT SIZE="2">View Program</FONT></A><BR>
+   -->
+
+ </ION_IF>
+
+<!-- Data -->
+
+ <ION_IF EXPR="$DIRD EQ 0">
+ <!-- use folder.sec.gif if NOT logged in -->
+   <IMG SRC="/icons/folder.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRD" VALUE1="1"
+             NAME2="PAGE" VALUE2="ion:///data_services.ion" >
+   <FONT SIZE="3"> Data Services</FONT></ION_LINK><BR>
+ <ION_ELSE />
+   <IMG SRC="/icons/folder.open.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRD" VALUE1="0" >
+   <FONT SIZE="3"> Data Services</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Access Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/access.html">
+   <FONT SIZE="2">Access form</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Archive Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///catalog/overview.html">
+   <FONT SIZE="2">Archive overview</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Browse Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///CDBpcat.html">
+   <FONT SIZE="2">Browse inventory</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Plots Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///instruments/cedarplots.html">
+   <FONT SIZE="2">Browse plots</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Models">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///dmsp/dmsp.html">
+    <FONT SIZE="2">DMSP Data</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Data Link">
+   <ION_LINK EVENT="SELECT" NAME1="SUBSELECT" VALUE1="DATAMAIN" >
+   <FONT SIZE="2">Get/plot data</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Instruments Link">
+   <ION_LINK EVENT="HTMLPAGE"  NAME1="PAGE" VALUE1="ion:///instruments/index.ion">
+   <FONT SIZE="2">Instruments</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="New Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///new.html">
+   <FONT SIZE="2">New data</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Request Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/datareq.form.html">
+   <FONT SIZE="2">Request data</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Rules Link">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///catalog/Rules.html">
+   <FONT SIZE="2">Rules of the Road</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Add Link">
+   <ION_LINK EVENT="HTMLPAGE"  NAME1="PAGE" VALUE1="ion:///data/submit.html">
+   <FONT SIZE="2">Submit data</FONT></ION_LINK><BR>
+
+ </ION_IF>
+
+<!-- Tools -->
+
+ <ION_IF EXPR="$DIRT EQ 0">
+   <IMG SRC="/icons/folder.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRT" VALUE1="1" 
+             NAME2="PAGE" VALUE2="ion:///tools/index.ion" >
+    <FONT SIZE="3"> Tools/Models</FONT></ION_LINK><BR>
+ <ION_ELSE />
+   <IMG SRC="/icons/folder.open.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRT" VALUE1="0" >
+    <FONT SIZE="3"> Tools/Models</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Analysis">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/analysis.html">
+    <FONT SIZE="2">Analysis</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Models">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/empirical_models.html">
+    <FONT SIZE="2">Empirical Models</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Instrcodes">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/instruments.html">
+    <FONT SIZE="2">Instruments</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Parcodes">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/parameters.html">
+    <FONT SIZE="2">Parameters</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Plotting">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/plot.html">
+    <FONT SIZE="2">Plotting</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Read/Write">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/formats.html">
+    <FONT SIZE="2">Read/Write</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="OPeNDAP servers">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/OPeNDAP.html">
+    <FONT SIZE="2">Servers</FONT></ION_LINK><BR>
+
+ </ION_IF>
+
+<!-- Documents -->
+
+ <ION_IF EXPR="$DIRO EQ 0">
+   <IMG SRC="/icons/folder.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRO" VALUE1="1" 
+             NAME2="PAGE" VALUE2="ion:///documents/index.ion" >
+    <FONT SIZE="3"> Documents</FONT></ION_LINK><BR>
+ <ION_ELSE />
+   <IMG SRC="/icons/folder.open.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRO" VALUE1="0" >
+    <FONT SIZE="3"> Documents</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Catalog Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///catalog/cat.toctext.html">
+    <FONT SIZE="2">Catalog</FONT></ION_LINK><BR>
+ 
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Contributions"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/contributions.html">
+    <FONT SIZE="2">Contributions</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Data Times Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/data_times.html">
+    <FONT SIZE="2">Data times</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Data Volume Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/data_volume.html">
+    <FONT SIZE="2">Data volume</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="DB Format Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/format.html">
+    <FONT SIZE="2">Database format</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="File notes Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/extra.html">
+    <FONT SIZE="2">File notes</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Inventory Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/inventory.html">
+    <FONT SIZE="2">Full Inventory</FONT></ION_LINK><BR>
+ 
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Instruments Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/instruments.html">
+    <FONT SIZE="2">Instrument list</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Parameters Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/parameters.html">
+    <FONT SIZE="2">Parameter list</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Statistics Link"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/statistics.html">
+    <FONT SIZE="2">Use statistics</FONT></ION_LINK><BR>
+
+ </ION_IF>
+
+<!-- Help -->
+
+ <ION_IF EXPR="$DIRH EQ 0">
+   <IMG SRC="/icons/folder.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRH" VALUE1="1" 
+             NAME2="PAGE" VALUE2="ion:///help.ion" >
+    <FONT SIZE="3"> Help</FONT></ION_LINK><BR>
+ <ION_ELSE />
+   <IMG SRC="/icons/folder.open.gif" ALT="DIR">
+   <ION_LINK EVENT="EXPAND" NAME1="DIRH" VALUE1="0" 
+             NAME2="PAGE" VALUE2="ion:///help.ion" >
+    <FONT SIZE="3"> Help</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Community Help">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/help.html">
+    <FONT SIZE="2">Community</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Data Help"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///data/help.html">
+    <FONT SIZE="2">Data</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Documents Help">
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///documents/help.html">
+    <FONT SIZE="2">Documents</FONT></ION_LINK><BR>
+
+   <IMG SRC="/icons/hand.right.gif" HSPACE="10" ALT="Tools Help"> 
+   <ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///tools/help.html">
+    <FONT SIZE="2">Tools</FONT></ION_LINK><BR>
+
+ </ION_IF>
+     
+<!-- Download -->
+
+<!--
+ <IMG SRC="/icons/transfer.gif" ALT="Download">
+ <A HREF="http://download.hao.ucar.edu/cedarweb" TARGET="cedarweb_aux">
+ <FONT SIZE="3">Download</FONT></A><BR>
+ -->
+ <IMG SRC="/icons/image1.gif" ALT="Contact">
+ <FONT SIZE="3">Contact us:</FONT><BR><FONT SIZE="2">cedar_db@hao.ucar.edu</FONT><BR>
+ <BR>
+ <HR WIDTH="75%">
+ <FONT SIZE="2">
+ <a href="http://www.ucar.edu/legal/terms_of_use.shtml#copyright">
+ Copyright 2006, UCAR.</a><BR>
+ Approved by Peter Fox</FONT><BR>
+
+</TD>
+
+<!-- This table entry contains variable content based on the EVENT -->
+
+<TD WIDTH='800' BACKGROUND='/images/Texture_lt_gray_004.jpg' VALIGN="TOP" >
+
+<!-- CEDARWEB pages -->
+
+ <ION_IF EXPR="$Document.EVENT EQ 'HTMLPAGE' AND ($PAGE NE 'undef')" >
+    <BR>
+    <ION_INCLUDE SRC="$PAGE" ASTEXT="FALSE" PRE="FALSE" />
+
+ <ION_ELSEIF EXPR="$Document.EVENT EQ 'EXPAND' AND ($PAGE NE 'undef')" />
+
+    <BR>
+    <ION_INCLUDE SRC="$PAGE" ASTEXT="FALSE" PRE="FALSE" />
+
+
+ <ION_ELSEIF EXPR="($Document.EVENT EQ 'SELECT')" />
+    <TABLE BORDER='2' WIDTH='100%' CELLPADDING='1' CELLSPACING='1'>
+	<TR>
+	<TD>
+	    <BR>
+	    <CENTER><FONT SIZE="+1" COLOR="red">Cedar Data Query and Selection Menu</FONT></CENTER>
+
+	    <ION_IF EXPR="$Form.SUBSELECT EQ 'DATAMAIN'">
+		<ION_INCLUDE SRC="ion:///datanew.ion" ASTEXT="FALSE" PRE="FALSE" />
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GOTO_I'" />
+		<ION_EVALUATE EXPR="$PLOT=FALSE" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$RTS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$PARAMS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$DAY='undef'" DISPLAY="FALSE"/>
+		<ION_INCLUDE SRC="ion:///instrument_list.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'RELOAD_I'" />
+		<ION_INCLUDE SRC="ion:///instrument_list.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SELECT_Y'" />
+		<ION_INCLUDE SRC="ion:///calendar_with_instrument_year.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GOTO_M'" />
+		<ION_INCLUDE SRC="ion:///calendar_with_instrument_month.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GOTO_D'" />
+		<ION_INCLUDE SRC="ion:///calendar_with_instrument_day.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SUBMIT_0'" />
+		<ION_INCLUDE SRC="ion:///Submit.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GET_R' OR $Form.SUBSELECT EQ 'RELOAD_R'" />
+		<ION_INCLUDE SRC="ion:///recordtype.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SUBMIT_R'" />
+		<ION_INCLUDE SRC="ion:///Submit_with_rec.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GET_P' OR $Form.SUBSELECT EQ 'RELOAD_P'" />
+		<ION_INCLUDE SRC="ion:///parameter.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SUBMIT_P'" />
+		<ION_INCLUDE SRC="ion:///Submit_with_para.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GOTO_P'" />
+		<ION_EVALUATE EXPR="$PLOT=TRUE" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$RTS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$PARAMS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$DAY='undef'" DISPLAY="FALSE"/>
+		<ION_INCLUDE SRC="ion:///instrument_plot_list.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'RELOAD_IP'" />
+		<ION_INCLUDE SRC="ion:///instrument_plot_list.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GOTO_C'" />
+		<ION_EVALUATE EXPR="$PLOT=FALSE" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$RTS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$PARAMS='undef'" DISPLAY="FALSE"/>
+		<ION_INCLUDE SRC="ion:///calendar_year.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SELECT_M'" />
+		<ION_INCLUDE SRC="ion:///calendar_month.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SELECT_D'" />
+		<ION_INCLUDE SRC="ion:///calendar_day.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'GOTO_IWD'" />
+		<ION_INCLUDE SRC="ion:///instrument_with_calendar.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Form.SUBSELECT EQ 'SUBMIT_1'" />
+		<ION_INCLUDE SRC="ion:///Submit1.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    </ION_IF>
+	</TD>
+	</TR>
+    </TABLE>
+
+ <ION_ELSEIF EXPR="($Document.EVENT EQ 'CREATE_PLOT') OR ($Document.EVENT EQ 'PRINT_PLOT') OR ($Document.EVENT EQ 'REPLOT')" />
+
+    <TABLE BORDER='2' WIDTH='100%' CELLPADDING='1' CELLSPACING='1'>
+	<TR>
+	<TD>
+	    <BR />
+	    <CENTER><FONT SIZE="+1" COLOR="red">Cedar Data Plotting</FONT></CENTER>
+
+	    <ION_IF EXPR="$Document.EVENT EQ 'CREATE_PLOT'">
+		<ION_EVALUATE EXPR="$NUMP=0" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$MINS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$MAXS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$LABELS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$ONOFFS='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$SDT='undef'" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$EDT='undef'" DISPLAY="FALSE"/>
+		<ION_INCLUDE SRC="ion:///create_plot.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Document.EVENT EQ 'REPLOT'" />
+		<ION_EVALUATE EXPR="$PARAMS=$Form.PARAM_LIST" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$MINS=$Form.MINS" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$MAXS=$Form.MAXS" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$LABELS=$Form.LABELS" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$ONOFFS=$Form.ONOFFS" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$SDT=$Form.SDT" DISPLAY="FALSE"/>
+		<ION_EVALUATE EXPR="$EDT=$Form.EDT" DISPLAY="FALSE"/>
+		<ION_INCLUDE SRC="ion:///create_plot.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    <ION_ELSEIF EXPR="$Document.EVENT EQ 'PRINT_PLOT'" />
+		<ION_INCLUDE SRC="ion:///print_plot.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+	    </ION_IF>
+	</TD>
+	</TR>
+    </TABLE>
+
+ <ION_ELSE />
+    <ION_INCLUDE SRC="ion:///cedar.ion" ASTEXT="FALSE" PRE="FALSE" />
+
+</TD>
+</TR>
+</TABLE>
+ </ION_IF>
+ <!-- End of EVENT IF loop -->
+</TD>
+<!-- End of main content column -->
+</TR>
+<!-- End of only one row in table -->
+</TABLE>
+<!-- End of main table -->
+</ION_BODY>
+<!-- End of BODY -->
+</ION_SCRIPT>
+<!-- End of CEDARWEB.ion -->

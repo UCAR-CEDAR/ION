@@ -1,0 +1,117 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="rverb" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="NDAYSP" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<p><b>Instrument:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r listinstrument.pro
+          listinstrument, $INSTR
+       </IDL>
+</ION_DATA_OUT></FONT></P>
+
+<ION_IF EXPR="$PLOT">
+    <ION_IF EXPR="$Form.DAY NE 'undef' ">
+       <ION_EVALUATE EXPR="$DAY=$Form.DAY" DISPLAY="FALSE"/>
+    <ION_ELSEIF EXPR="$DAY NE 'undef'"/>
+    <ION_ELSE />
+       <ION_EVALUATE EXPR="$DAY=-500" DISPLAY="FALSE"/>
+       <p> <font color="black"> Please choose a <b>starting date</b>. <font color="purple">(Use the back button.)</font></p>
+    </ION_IF>
+
+    <ION_IF EXPR="$Form.NDAYS NE 'undef' OR $Form.NDAYS NE ''">
+       <ION_EVALUATE EXPR="$NDAYSP=$Form.NDAYS" DISPLAY="FALSE"/>
+    <ION_ELSEIF EXPR="$NDAYSP NE 'undef'" />
+    <ION_ELSE />
+       <ION_EVALUATE EXPR="$NDAYSP=-500" DISPLAY="FALSE"/>
+       <p> Please enter a <b>date range</b>. Use the back button.</p>
+    </ION_IF>
+
+    <ION_IF EXPR="$Form.DAY NE 'undef' AND ($Form.NDAYS EQ '' OR $Form.NDAYS EQ 'undef' OR $Form.NDAYS EQ ' ')">
+       <ION_EVALUATE EXPR="$NDAYSP=-500" DISPLAY="FALSE"/>
+       <p><font color="black"> Please enter a <b>date range</b>. <font color="purple">(Use the back button.)</font></p>
+    </ION_IF>
+</ION_IF>
+
+<P><b>Starting Date:</b>  <FONT SIZE="3" COLOR="BLUE">
+<ION_IF EXPR="$MONTH EQ '1'"> January
+<ION_ELSEIF EXPR="$MONTH EQ '2'"/> February
+<ION_ELSEIF EXPR="$MONTH EQ '3'"/> March
+<ION_ELSEIF EXPR="$MONTH EQ '4'"/> April
+<ION_ELSEIF EXPR="$MONTH EQ '5'"/> May
+<ION_ELSEIF EXPR="$MONTH EQ '6'"/> June
+<ION_ELSEIF EXPR="$MONTH EQ '7'"/> July
+<ION_ELSEIF EXPR="$MONTH EQ '8'"/> August
+<ION_ELSEIF EXPR="$MONTH EQ '9'"/> September
+<ION_ELSEIF EXPR="$MONTH EQ '10'"/> October
+<ION_ELSEIF EXPR="$MONTH EQ '11'"/> November
+<ION_ELSE/> December
+</ION_IF>
+<ION_VARIABLE NAME="$DAY"/>, <ION_VARIABLE NAME="$YEAR"/></FONT></P>
+
+<P><b>Ending Date:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+	<IDL>
+	   .r enddate.pro
+	   enddate,$YEAR,$MONTH,$DAY,$NDAYSP
+	</IDL>
+</ION_DATA_OUT>
+</FONT></font></P>
+
+<ION_IF EXPR="$Form.RV NE 'undef'">
+    <ION_EVALUATE EXPR="$rverb=$Form.RV" DISPLAY="FALSE"/>
+<ION_ELSE />
+    <ION_EVALUATE EXPR="$rverb=0" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_FORM NAME="RECORDTYPE" METHOD="POST">
+    <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+    <SELECT NAME=RECORD_LIST SIZE=1>
+    <ION_IF EXPR="$PLOT">
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+	       .r cedar_catalog_setup
+	       cedar_catalog_setup
+	       .r record_plot_list
+	       record_plot_list,$INSTR,$YEAR,$MONTH,$DAY,$NDAYSP,$rverb
+	    </IDL>
+	</ION_DATA_OUT>
+    <ION_ELSE />
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+	       .r cedar_catalog_setup
+	       cedar_catalog_setup
+	       .r record_list
+	       record_list,$INSTR,$YEAR,$MONTH,$DAY,$NDAYSP,$rverb
+	    </IDL>
+	</ION_DATA_OUT>
+    </ION_IF>
+    </SELECT>
+  <p>Reload the <b>record type list</b> with one of the following possible combinations:</p>
+  <ION_RADIO NAME="RV" VALUE="0" DEFAULT/> List <BR>
+  <ION_RADIO NAME="RV" VALUE="1" /> RecType-List <BR>
+  <ION_RADIO NAME="RV" VALUE="2" /> Inst-RecType-List <BR><BR>
+  <ION_BUTTON onClick="submitClick('RECORDTYPE','RELOAD_R')" EVENT="SELECT" TYPE="BUTTON" LABEL="Reload Record Type" />
+  <BR />
+
+  <ION_IF EXPR="$PLOT">
+    <p>Click <b>proceed</b> to select Parameters to plot.</p>
+    <ION_BUTTON onClick="submitClick('RECORDTYPE','GET_P')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+  <ION_ELSE />
+    <p>Click <b>proceed</b> to generate your data request .</p>
+    <ION_BUTTON onClick="submitClick('RECORDTYPE','SUBMIT_R')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+  </ION_IF>
+  <BR />
+  <BR />
+</ION_FORM>
+</ION_BODY>
+
+</ION_SCRIPT>

@@ -1,0 +1,113 @@
+<ION_SCRIPT>
+<ION_HEADER>
+    <TITLE>Parameter list</TITLE>
+    <VARIABLES>
+	<VARIABLE_DECL NAME="pverb" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+    </VARIABLES>
+</ION_HEADER>
+
+<ION_BODY>
+
+<p><b>Instrument:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r listinstrument.pro
+          listinstrument, $INSTR
+       </IDL>
+</ION_DATA_OUT></FONT></P>
+
+<ION_IF EXPR="$Form.RECORD_LIST NE 'undef'">
+    <ION_EVALUATE EXPR="$RTS=$Form.RECORD_LIST" DISPLAY="FALSE"/>
+</ION_IF>
+
+<P><b>Record Type:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+	<IDL>
+	   .r cedar_catalog_setup
+	   cedar_catalog_setup
+	   .r listrec
+	   listrec, $INSTR,$RTS
+	</IDL>
+</ION_DATA_OUT></FONT></P>
+
+<P><b>Starting day:</b>  <FONT SIZE="3" COLOR="BLUE">
+<ION_IF EXPR="$MONTH EQ '1'"> January
+<ION_ELSEIF EXPR="$MONTH EQ '2'"/> February
+<ION_ELSEIF EXPR="$MONTH EQ '3'"/> March
+<ION_ELSEIF EXPR="$MONTH EQ '4'"/> April
+<ION_ELSEIF EXPR="$MONTH EQ '5'"/> May
+<ION_ELSEIF EXPR="$MONTH EQ '6'"/> June
+<ION_ELSEIF EXPR="$MONTH EQ '7'"/> July
+<ION_ELSEIF EXPR="$MONTH EQ '8'"/> August
+<ION_ELSEIF EXPR="$MONTH EQ '9'"/> September
+<ION_ELSEIF EXPR="$MONTH EQ '10'"/> October
+<ION_ELSEIF EXPR="$MONTH EQ '11'"/> November
+<ION_ELSE/> December
+</ION_IF>
+<ION_VARIABLE NAME="$DAY"/>, <ION_VARIABLE NAME="$YEAR"/></FONT></P>
+
+<P><b>Ending Date:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+	<IDL>
+	   .r enddate
+	   enddate,$YEAR,$MONTH,$DAY,$NDAYSP
+	</IDL>
+</ION_DATA_OUT>
+</FONT></font></P>
+
+<P>Please choose the <b>parameter(s).</b></br>(To select/deselect multiple parameters, hold down the control key while clicking selections.)</P>
+
+<ION_IF EXPR="$Form.PV NE 'undef'">
+    <ION_EVALUATE EXPR="$pverb=$Form.PV" DISPLAY="FALSE"/>
+<ION_ELSE />
+    <ION_EVALUATE EXPR="$pverb=0" DISPLAY="FALSE"/>
+</ION_IF>
+
+<ION_FORM NAME="param_form" METHOD="POST" onSubmit="reportSelection()">
+    <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+    <INPUT NAME="NUMSELECTED" TYPE="HIDDEN" VALUE="0">
+    <SELECT NAME="PARAM_LIST" SIZE=10 MULTIPLE onChange=reportSelection()>
+    <ION_IF EXPR="$PLOT">
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+	       .r cedar_catalog_setup
+	       cedar_catalog_setup
+	       .r parameter_plot_list
+	       parameter_plot_list,$INSTR,$YEAR,$MONTH,$DAY,$NDAYSP,$RTS,$pverb
+	    </IDL>
+	</ION_DATA_OUT>
+    <ION_ELSE />
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+	       .r cedar_catalog_setup
+	       cedar_catalog_setup
+	       .r parameter_list
+	       parameter_list,$INSTR,$YEAR,$MONTH,$DAY,$NDAYSP,$RTS,$pverb
+	    </IDL>
+	</ION_DATA_OUT>
+    </ION_IF>
+    </SELECT>
+  
+  <p>Reload the <b>parameter list</b> with one of the following possible combinations:</p>
+  <ION_RADIO NAME="PV" VALUE="0" DEFAULT/> Name <BR>
+  <ION_RADIO NAME="PV" VALUE="1" /> Code_Name <BR>
+  <ION_RADIO NAME="PV" VALUE="2" /> Num-Code_Name <BR><BR>
+  <ION_BUTTON onClick="submitClick('param_form','RELOAD_P')" EVENT="SELECT" TYPE="BUTTON" LABEL="Reload Parameters" />
+  <BR>
+  <ION_IF EXPR="$PLOT">
+    <p>Click <b>proceed</b> to generate your data plot.</p>
+    <ION_BUTTON EVENT="CREATE_PLOT" LABEL="Proceed" TYPE="BUTTON" PERSIST="TRUE" />
+    <BR>
+    <BR>
+  <ION_ELSE />
+    <p>Click <b>proceed</b> to generate your data request .</p>
+    <ION_BUTTON onClick="submitClick('param_form','SUBMIT_P')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+    <BR>
+    <BR>
+  </ION_IF>
+</ION_FORM>
+</ION_BODY>
+
+</ION_SCRIPT>

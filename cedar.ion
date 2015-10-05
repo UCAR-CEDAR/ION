@@ -1,0 +1,90 @@
+<ION_SCRIPT>
+
+<ION_HEADER>
+ <AUTHOR>Peter Fox, Barbara Emery</AUTHOR>
+ <APPLICATION>CEDARWEB splash page</APPLICATION>
+ <COPYRIGHT>UCAR, 2000</COPYRIGHT>
+ <DATE>Thu Sep 28 15:22:13 MDT 2000</DATE>
+ <LASTUPDATE>Tue Jun 15 11:20:32 MDT 2004</LASTUPDATE>
+ <TITLE>The NCAR CEDAR Home Page </TITLE>
+ <!-- to do - include other DC metatags -->
+ <META NAME="description" CONTENT="The NCAR CEDAR System: an online database of upper atmosphere and model data, and geophysical indices">
+ <META NAME="keywords" CONTENT="CEDAR, NCAR, National Center for Atmospheric Research, NSF, database, upper atmosphere, HAO, High Altitude Observatory, Radar, Lidar, HF, HVF, MST, Michelson Interferometer, Incoherent Scattering">
+</ION_HEADER>
+
+<ION_BODY>
+
+<h4><font color=red><a href="http://cedarweb.hao.ucar.edu/wiki" target="cedarweb_aux">
+Link to CEDAR wiki<a/></font></h4>
+
+<P><BR>
+<A HREF="http://www.nsf.gov/pubs/2005/nsf05554/nsf05554.htm" TARGET="cedarweb_aux">
+<EM>Coupling, Energetics and Dynamics of Atmospheric Regions</EM></A>
+(CEDAR) is a focused 
+<A HREF="http://www.usgcrp.gov/" TARGET="cedarweb_aux">
+<EM>Global Change program</EM></A> sponsored by the 
+<A HREF="http://www.nsf.gov" TARGET="cedarweb_aux">
+<EM>National Science Foundation (NSF)</EM></A>. 
+The scientific objectives of the program are described in the 
+<A HREF="/community/CEDAR.pdf" TARGET="cedarweb_aux">
+CEDAR Phase III document</A> (1.8MB, acrobat reader required). <BR>
+<!--center>
+<font color="red" size="5">CEDARWEB DOWNTIME - Monday October 24, 2005. 2:30PM-6:30PM MST</font><br>
+</center-->
+<br>
+The CEDAR Data System (formerly the CEDAR Database and before that, the 
+Incoherent Scatter Radar Database) is a cooperative project between the 
+<A HREF="http://www.hao.ucar.edu" TARGET="cedarweb_aux">
+<EM>High Altitude Observatory (HAO)</EM></A> 
+division of the <A HREF="http://www.ncar.ucar.edu" TARGET="cedarweb_aux">
+<EM>National Center for Atmospheric Research (NCAR)</EM></A>, the 
+<A HREF="http://www.nsf.gov/" TARGET="cedarweb_aux">
+<EM>National Science Foundation (NSF)</EM></A>, and numerous institutions 
+that provide upper atmosphere data and model output for community use. <BR>
+<BR>
+The CEDAR Data System mission is to provide: 
+<UL>
+<LI>long term archive for observations and models of the Earth's upper 
+atmosphere and geophysical indices and parameters needed to interpret them,</LI>
+<LI>browsing capability to survey the data holdings and identify periods,
+instruments, models, of interest,</LI>
+<LI>reliable data access methods that are fast, stable and interactive, and</LI>
+<LI>detailed documentation on data acquisition and reduction.</LI>
+</UL>
+<P>
+<CENTER>
+ <H2><ION_LINK EVENT="SELECT" NAME1="SUBSELECT" VALUE1="DATAMAIN">Proceed to data selection now</ION_LINK></H2>
+ <NOSCRIPT>
+    <SPAN STYLE="font-weight:bold;color:red;">NOTE</SPAN>: CedarWeb data selection requires JavaScript to be enabled. Please enable JavaScript before continuing or data selection will not work.
+ </NOSCRIPT>
+</CENTER>
+<!--
+<P>
+<SPAN STYLE="font-weight:bold;font-size:13pt;color:red;">UPCOMING DOWNTIME</SPAN>: CEDARweb
+will be down this coming Wednesday, August 8th, from 7:00 AM - 9:00 AM MDT for
+scheduled maintenance.
+-->
+<!--
+<P>
+<B>**Note**</B>: Up to now it has not been necessary to log in to access
+data within CedarWeb. We have just installed some system upgrades that now
+requires you to log in in order to access data. Also, in order to log in you
+must have JavaScript and cookies enabled on your browser. If you have any
+questions, please don't hesitate to contact us.
+-->
+<P>
+This site also supports the CEDAR community which is represented by the 
+<ION_LINK EVENT="HTMLPAGE" NAME1="PAGE" VALUE1="ion:///community/csscnow.html">
+CEDAR Science Steering Committee</ION_LINK>
+consisting of representatives from the community and NSF and meets twice a year.
+Read more about the community in the latest 
+<A HREF="/community/POST_current.pdf" TARGET="cedarweb_aux">
+CEDAR POST (Latest issue)</A>.
+<BR />
+<BR />
+<A HREF="/community/DASI_report_lo-res.pdf" TARGET="cedarweb_aux">Distributed Array of Small Instruments (DASI) report</A> is now available (3.8MB, acrobat reader required).
+<BR />
+<BR />
+-- Revised 04 Sep 2007 by emery@ucar.edu
+</ION_BODY>
+</ION_SCRIPT>

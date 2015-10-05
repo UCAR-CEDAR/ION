@@ -1,0 +1,75 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="MONTH" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+	<EVENTS>
+	</EVENTS>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<P><b>Instrument</b>: <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r listinstrument.pro
+          listinstrument, $INSTR
+       </IDL>
+    </ION_DATA_OUT></FONT></P>
+
+<P><b>Year</b>: <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$YEAR"/></FONT></P>
+
+<ION_IF EXPR="$Form.MONTH NE 'undef'">
+   <ION_EVALUATE EXPR="$MONTH=$Form.MONTH" DISPLAY="FALSE"/>
+
+<P><b>Month</b>:  <FONT SIZE="3" COLOR="BLUE">
+<ION_IF EXPR="$Form.MONTH EQ '1'"> January
+<ION_ELSEIF EXPR="$Form.MONTH EQ '2'"/> February
+<ION_ELSEIF EXPR="$Form.MONTH EQ '3'"/> March
+<ION_ELSEIF EXPR="$Form.MONTH EQ '4'"/> April
+<ION_ELSEIF EXPR="$Form.MONTH EQ '5'"/> May
+<ION_ELSEIF EXPR="$Form.MONTH EQ '6'"/> June
+<ION_ELSEIF EXPR="$Form.MONTH EQ '7'"/> July
+<ION_ELSEIF EXPR="$Form.MONTH EQ '8'"/> August
+<ION_ELSEIF EXPR="$Form.MONTH EQ '9'"/> September
+<ION_ELSEIF EXPR="$Form.MONTH EQ '10'"/> October
+<ION_ELSEIF EXPR="$Form.MONTH EQ '11'"/> November
+<ION_ELSE/>December
+</ION_IF>
+</FONT></P>
+
+<ION_FORM NAME="DAY" METHOD="POST">
+<p><b>Step 4/4:</b> Please select a <b>starting day</b>.</P>
+<ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r calendar_with_instrument_day.pro
+          calendar_with_instrument_day, $INSTR, $YEAR, $MONTH, "$PLOT"
+       </IDL>
+</ION_DATA_OUT>
+    <P>Please enter the amount of <b>days</b> from the starting date for which you wish to have data. (possible values 0 - 999)</P>
+   <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+   <ION_IF EXPR="$PLOT">
+       <INPUT NAME="NDAYS" TYPE="TEXT" MAXLENGTH=3 SIZE=4 VALUE="9">
+       <P>Click <b>proceed</b> to select Record Type to plot.</P>
+       <ION_BUTTON onClick="submitClick('DAY','GET_R')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+   <ION_ELSE />
+       <INPUT NAME="NDAYS" TYPE="TEXT" MAXLENGTH=3 SIZE=4>
+       <P>Click <b>proceed</b> to generate your data request.</p>
+       <ION_BUTTON onClick="submitClick('DAY','SUBMIT_0')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+   </ION_IF>
+   <BR />
+   <BR />
+</ION_FORM>
+
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$MONTH=-500" DISPLAY="FALSE"/>
+   <p> Please choose a <b>month</b>. <font color="purple"> (Use the back button.)</font></P>
+</ION_IF> 
+
+</ION_BODY>
+
+</ION_SCRIPT>

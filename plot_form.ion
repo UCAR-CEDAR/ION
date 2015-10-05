@@ -1,0 +1,37 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	</VARIABLES>
+    <EVENTS>
+	<EVENT_DECL NAME="PLOT_SUBMIT" ACTION="ion:///plot_submit.ion"/>
+    </EVENTS>
+    </ION_HEADER>
+    <ION_BODY>
+	<ION_FORM NAME="plot_form" METHOD="GET">
+	    <!--
+	    <INPUT TYPE="HIDDEN" NAME="ONOFFS" VALUE="undef" >
+	    <INPUT TYPE="HIDDEN" NAME="MINS" VALUE="undef" >
+	    <INPUT TYPE="HIDDEN" NAME="MAXS" VALUE="undef" >
+	    <INPUT TYPE="HIDDEN" NAME="LABELS" VALUE="undef" >
+	    <INPUT TYPE="HIDDEN" NAME="SDT" VALUE="undef" >
+	    <INPUT TYPE="HIDDEN" NAME="EDT" VALUE="undef" >
+	    -->
+	    Instrument: <INPUT TYPE="TEXT" NAME="INSTR" VALUE="" SIZE="10">
+	    <BR />
+	    Parameters: <INPUT TYPE="TEXT" NAME="PARAM_LIST" VALUE="" SIZE="10">
+	    <BR />
+	    # Parameters: <INPUT TYPE="TEXT" NAME="NUMSELECTED" VALUE="" SIZE="10">
+	    <BR />
+	    Year: <INPUT TYPE="TEXT" NAME="YEAR" VALUE="" SIZE="10">
+	    <BR />
+	    Month: <INPUT TYPE="TEXT" NAME="MONTH" VALUE="" SIZE="10">
+	    <BR />
+	    Day: <INPUT TYPE="TEXT" NAME="DAY" VALUE="" SIZE="10">
+	    <BR />
+	    # Days: <INPUT TYPE="TEXT" NAME="NDAYSP" VALUE="9" SIZE="10">
+	    <BR />
+	    <INPUT TYPE="SUBMIT" NAME="PLOT_SUBMIT" VALUE="PLOT_SUBMIT" PERSIST="TRUE">
+	</ION_FORM>
+    </ION_BODY>
+</ION_SCRIPT>
+

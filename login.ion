@@ -1,0 +1,78 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<EVENTS>
+	    <EVENT_DECL NAME="VALIDATE" ACTION="ion:///login.ion"/>
+	    <ION_IF EXPR="$Document.EVENT EQ 'GOTO_L'">
+		<META HTTP-EQUIV="Expires" CONTENT="Mon, 01 Apr 1996 09:00:00 GMT">
+		<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+		<META HTTP-EQUIV="Refresh" CONTENT='2;url=https://cedarweb.hao.ucar.edu:443/cgi-bin/ion-p?page=login.ion'>
+	    </ION_IF>
+	   <EVENT_DECL NAME="HTMLPAGE" ACTION="ion:///cedarweb.ion"/>
+	</EVENTS>
+    </ION_HEADER>
+
+    <ION_BODY BACKGROUND="/images/Texture_lt_gray_004.jpg" TEXT="black">
+	<ION_IF EXPR="$Document.EVENT EQ 'GOTO_L'">
+	    <p>Connecting to secure server...</p>
+	<ION_ELSEIF EXPR="$Document.EVENT EQ 'VALIDATE'" />
+	    <ION_DATA_OUT PRE="FALSE">
+		<IDL>
+		    .r cedar_authentication_setup.pro
+		    cedar_authentication_setup
+		    .r login.pro
+		    result=cedar_login('$Form.username', '$Form.password', '$Browser.REMOTE_ADDR')
+		</IDL>
+	    </ION_DATA_OUT>
+	<ION_ELSE />
+	    <TABLE BACKGROUND='/images/Texture_lt_gray_004.jpg' BORDER='0' WIDTH='100%' CELLPADDING='1' CELLSPACING='0'>
+		<TR>
+		    <TD WIDTH='20%' BACKGROUND='/images/Texture_lt_gray_004.jpg' >
+			<P ALIGN='center'>
+			    <A HREF="http://www.ucar.edu" TARGET="_blank"><IMG SRC='/images/CedarwebUCAR.gif' ALT='UCAR' BORDER='0'><BR><FONT SIZE="2">UCAR</FONT></A>
+			</P>
+		    </TD>
+		    <TD WIDTH='80%' BACKGROUND='/images/Texture_lt_gray_004.jpg' >
+			<P ALIGN='center'>
+			    <IMG BORDER='0' SRC='/images/Cedarweb.jpg' ALT='CEDARweb'>
+			</P>
+		    </TD>
+		</TR>
+	    </TABLE>
+	    <BR />
+	    <BR />
+	    <DIV STYLE="text-align:center;font-weight:bold;">
+		<SPAN STYLE="font-size:18pt;">Welcome to CEDARweb Login</SPAN>
+		<BR />
+		<BR />
+		Please enter your user name and password.
+		<BR />
+		<FORM ACTION="https://cedarweb.hao.ucar.edu:443/cgi-bin/ion-p" NAME="form1">
+		    <TABLE WIDTH="200" ALIGN="center" BORDER="1" CELLPADDING="2" CELLSPACING="0">
+			<TR>
+			    <TD WIDTH="50%" ALIGN="right" STYLE="font-weight:bold;">username:</TD>
+			    <TD WIDTH="50%" ALIGN="left"><INPUT TYPE="TEXT" NAME="username" VALUE="" SIZE="10" /></TD>
+			</TR>
+			<TR>
+			    <TD WIDTH="50%" ALIGN="right" STYLE="font-weight:bold;">password:</TD>
+			    <TD WIDTH="50%" ALIGN="left"><INPUT TYPE="PASSWORD" NAME="password" VALUE="" SIZE="10" /></TD>
+			</TR>
+			<TR>
+			    <TD COLSPAN="2" ALIGN="center"><INPUT NAME="VALIDATE" VALUE="Sign In" TYPE="SUBMIT" /></TD>
+			</TR>
+		    </TABLE>
+		    <INPUT TYPE="HIDDEN" NAME="ION__E1" VALUE="VALIDATE:ion:///login.ion" />
+		</FORM>
+		Don't have a CEDARweb login? <A HREF="http://cedarweb.hao.ucar.edu/wiki/index.php/Special:CedarCreateAccount"><I>Apply for one now</I></A>
+		<BR />
+		<BR />
+		Forgotten your password? Go to <A HREF="http://cedarweb.hao.ucar.edu/wiki/index.php?title=Special:Userlogin"><I>the CEDAR Wiki</I></A>, enter your username, and click E-mail passowrd.
+		<BR />
+		<BR />
+		If you experience problems logging in, please contact <A HREF="mailto:cedar_db@hao.ucar.edu?Subject=CEDARweb%3A%20Problem%20logging%20in&Body=Please%20include%20any%20error%20messages%20you%20may%20see%20and%20your%20username"><I>the CEDARweb administrator</I></A>!
+		<BR />
+		<BR />
+		<A HREF="/index.html">Return to CEDARweb main page!</A>
+	    </P>
+	</ION_IF>
+    </ION_BODY>
+</ION_SCRIPT>

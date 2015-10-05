@@ -1,0 +1,85 @@
+pro missingvalue,oldparam,newparam,paramindex,n_valid,MISSING_VALUE=missing_value
+; filters out missing values for param and returns an index to be
+; used to filter other quanities
+if (not keyword_set(missing_value)) then missing_value=-32767
+paramindex=where( oldparam gt missing_value, n_valid)
+newparam=oldparam(paramindex)
+end
+function timecoord,dayno,uth
+t=dayno+uth/24.0
+return, t
+end
+pro aggregate,opendap_object,kindat,kinst,request,longname,scale,units,results
+; opendap_object is the DAP object returned from a call to get_opendap
+; kindat is the kind of data to be matched.
+; kinst is the Instrument Code to be matched. with kindat, forms
+; record_type
+; request is the string array of variables to be returned, should
+; include all 'coordinate' variables
+; results is a structure built up using the names of 'request' with
+; the values inserted, longnames, units, etc.
+; time is the start time for each valid record_type
+;
+missingvalue=-32767
+; parse the dds of the OPeNDAP object to return a tree listing 
+; of tags names and structure indices used to reference them
+dods_variables, opendap_object, ntree, treelist, namelist
+;print_dods_variables,ntree,treelist,namelist
+n_request=n_elements(request)
+n_virtual=n_tags(opendap_object)
+for v=0l,n_virtual-1 do begin ;{
+   n_level=n_tags(opendap_object.(v))
+   record_select=intarr(n_level)
+;determine which records match record_type, i.e. KINST/KINDAT
+   for n=0l,n_level-1 do begin ;{
+      if (opendap_object.(v).(n).prologue.KINST eq kinst ) and $
+         (opendap_object.(v).(n).prologue.KINDAT eq kindat ) then begin ;{ choose only this KINST and KINDAT
+	    record_select(n)=1
+            ;start_year(n)=opendap_object.(v).(n).prologue.IBYRT ; start year
+            ;end_year(n)=opendap_object.(v).(n).prologue.IEYRT   ; end year
+            ;start_time(n)=opendap_object.(v).(n).prologue.IBDTT ; start time 
+            ;end_time(n)=opendap_object.(v).(n).prologue.IEDTT   ; end time 
+            ;hm_time(n)=opendap_object.(v).(n).prologue.IBHMT    ; start hour/min.
+            ;hm_tend(n)=opendap_object.(v).(n).prologue.IEHMT    ; end hour/min.
+            ;month(n)=start_time(n)/100         ; calculate the month
+            ;day(n)=start_time(n)-month(n)*100  ; calculate the day
+            ;time(n)=day(n)+hm_time(n)/2400.    ; calculate the time of day?
+      endif ;}
+   endfor ;}
+;scan namelist and use treelist and ntree to locate element
+;indices from treelist(o:o+ntree(s)-1) where o=sum(ntree(s-1))+1
+   for r=0l,n_request-1 do begin ; { search requested fields
+;locate all occurences of the parameter in the namelist
+;only some of these may correspond to a valid record_type
+      select=where(strpos(namelist,request[r]+'.'+request[r]) ne -1,n_select)
+;reset dimension counter for aggregation
+      dim=0
+;verify we have a match
+      if (n_select gt 0) then begin ;{
+;aggregation over each valid selection
+	 scorrect=0
+	 for s=0l,n_select-1 do begin ;{
+;calculate offset for treelist pointer
+	    offset=total(ntree(0:select(s)-1))+1
+;fetch valid indices from treelist
+            indx=treelist(offset:offset+ntree(select(s))-1)
+;only use the correct records in the aggregation
+            if ( record_select[indx[1]] ) then begin ;{
+;assume 5 here....
+;aggregate dimension counter
+               dim=dim+opendap_object.(indx[0]).(indx[1]).(indx[2]).(indx[3]).(indx[4]+1)(2)+1
+;aggregate values in temporary array
+               if (scorrect eq 0) then tmp=float(opendap_object.(indx[0]).(indx[1]).(indx[2]).(indx[3]).(indx[4])) else tmp=[tmp,float(opendap_object.(indx[0]).(indx[1]).(indx[2]).(indx[3]).(indx[4]))]
+               scorrect=scorrect+1
+	    endif ;}
+         endfor ;}
+      endif ;}
+;apply scaling to temporary array
+      tmp(where (tmp gt missingvalue))=tmp(where (tmp gt missingvalue))*scale[r]
+;build a structure using the attributes that go with this request
+      stmp={name:request[r],value:tmp,dim:dim,long_name:longname[r],units:units[r],missing_value:missingvalue}
+;add it to the structure to be returned
+      if r eq 0 then results=create_struct(request[r],stmp) else results=create_struct(results,request[r],stmp)
+   endfor ;}
+endfor ;}
+end

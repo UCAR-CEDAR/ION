@@ -1,0 +1,47 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="INSTR" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<ION_IF EXPR="$Form.INSTRUMENT_LIST NE 'undef'">
+   <ION_EVALUATE EXPR="$INSTR=$Form.INSTRUMENT_LIST" DISPLAY="FALSE"/>
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$INSTR=-500" DISPLAY="FALSE"/>
+</ION_IF> 
+
+<P><b>Instrument</b>: <FONT SIZE="3" COLOR="BLUE">
+
+<ION_DATA_OUT PRE="FALSE">
+<IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r listinstrument.pro
+          listinstrument,$INSTR
+</IDL>
+</ION_DATA_OUT></FONT></P>
+
+<ION_FORM NAME="YEAR" METHOD="POST">
+    <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+    <p><b>Step 2/4:</b> Please select a <b>starting year</b>.</p>
+    <ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r calendar_with_instrument_year.pro
+          calendar_with_instrument_year, $INSTR, "$PLOT"
+       </IDL>
+    </ION_DATA_OUT>
+
+   <P>Click <b>proceed</b> to select a month.</P>
+   <ION_BUTTON onClick="submitClick('YEAR','GOTO_M')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+   <BR />
+   <BR />
+</ION_FORM>
+
+</ION_BODY>
+
+</ION_SCRIPT>

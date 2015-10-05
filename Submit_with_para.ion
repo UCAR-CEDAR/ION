@@ -1,0 +1,154 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<TITLE>Instrument Record Parameter </TITLE>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="NDAYSP" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="RTS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="PARAMS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+    </ION_HEADER>
+    <ION_BODY>
+
+	<P><b> You have chosen the following selections:</b></p>
+	<font color="darkblue">
+	    <p>
+		<b>Instrument:</b>
+		<FONT SIZE="3" COLOR="BLUE">
+		    <ION_DATA_OUT PRE="FALSE">
+			<IDL>
+			    .r cedar_catalog_setup
+			    cedar_catalog_setup
+			    .r listinstrument.pro
+			    listinstrument, $INSTR
+			</IDL>
+		    </ION_DATA_OUT>
+		</FONT>
+	    </P>
+
+	    <ION_IF EXPR="$Form.RECORD_LIST NE 'undef'">
+		<ION_EVALUATE EXPR="$RTS=$Form.RECORD_LIST" DISPLAY="FALSE"/>
+	    </ION_IF>
+
+	    <p>
+		<b>Record Type:</b>
+		<FONT SIZE="3" COLOR="BLUE">
+		    <ION_DATA_OUT PRE="FALSE">
+			<IDL>
+			    .r cedar_catalog_setup
+			    cedar_catalog_setup
+			    .r listrec.pro
+			    listrec, $INSTR,$RTS
+			</IDL>
+		    </ION_DATA_OUT>
+		</FONT>
+	    </P>
+
+	    <ION_IF EXPR="$Form.PARAM_LIST NE 'undef'">
+		<ION_EVALUATE EXPR="$PARAMS=$Form.PARAM_LIST" DISPLAY="FALSE"/>
+
+		<p>
+		    <b>Parameters:</b>
+		    <FONT SIZE="3" COLOR="BLUE">
+			<ION_DATA_OUT PRE="FALSE">
+			    <IDL>
+				PARAMS='undef'
+				.r cedar_catalog_setup
+				cedar_catalog_setup
+				.r listpara.pro
+				listpara, $INSTR,$RTS,'$PARAMS'
+			    </IDL>
+			</ION_DATA_OUT>
+		    </FONT>
+		</P>
+	    <ION_ELSEIF EXPR="$PARAMS NE 'undef'"/>
+		<p>
+		    <b>Parameters:</b>
+		    <FONT SIZE="3" COLOR="BLUE">
+			<ION_DATA_OUT PRE="FALSE">
+			    <IDL>
+				.r cedar_catalog_setup
+				cedar_catalog_setup
+				.r listpara.pro
+				listpara, $INSTR,$RTS,'$PARAMS'
+			    </IDL>
+			</ION_DATA_OUT>
+		    </FONT>
+		</P>
+	    <ION_ELSE/>
+		<P>
+		    <font color="black">
+			Please choose <b>parameter(s)</b>.
+			<font color="purple">
+			    (Use the back button.)
+			</font>
+		    </FONT>
+		</P>
+	    </ION_IF>
+	</FONT>
+
+	<ION_IF EXPR="$PARAMS NE 'undef'">
+	    <font color="darkblue">
+		<P>
+		    <b>Starting Date:</b>
+		    <FONT SIZE="3" COLOR="BLUE">
+			<ION_IF EXPR="$MONTH EQ '1'"> January
+			    <ION_ELSEIF EXPR="$MONTH EQ '2'"/> February
+			    <ION_ELSEIF EXPR="$MONTH EQ '3'"/> March
+			    <ION_ELSEIF EXPR="$MONTH EQ '4'"/> April
+			    <ION_ELSEIF EXPR="$MONTH EQ '5'"/> May
+			    <ION_ELSEIF EXPR="$MONTH EQ '6'"/> June
+			    <ION_ELSEIF EXPR="$MONTH EQ '7'"/> July
+			    <ION_ELSEIF EXPR="$MONTH EQ '8'"/> August
+			    <ION_ELSEIF EXPR="$MONTH EQ '9'"/> September
+			    <ION_ELSEIF EXPR="$MONTH EQ '10'"/> October
+			    <ION_ELSEIF EXPR="$MONTH EQ '11'"/> November
+			    <ION_ELSE/> December
+			</ION_IF>
+			<ION_VARIABLE NAME="$DAY"/>, <ION_VARIABLE NAME="$YEAR"/>
+		    </FONT>
+		</P>
+
+		<P>
+		    <b>Ending Date:</b>
+		    <FONT SIZE="3" COLOR="BLUE">
+			<ION_DATA_OUT PRE="FALSE">
+			    <IDL>
+				.r enddate
+				enddate,$YEAR,$MONTH,$DAY,$NDAYSP
+			    </IDL>
+			</ION_DATA_OUT>
+		    </FONT>
+		</P>
+	    </FONT>
+
+	    <ION_FORM  METHOD="POST">
+		<ION_DATA_OUT PRE="FALSE">
+		    <IDL>
+			.r cedar_catalog_setup
+			cedar_catalog_setup
+			.r SubmitP.pro
+			SubmitP, $INSTR, $RTS, '$PARAMS', $YEAR, $MONTH, $DAY, $NDAYSP
+		    </IDL>
+		</ION_DATA_OUT>
+
+		<SCRIPT LANGUAGE="JavaScript">
+		    kinst='<ION_VARIABLE NAME="$INSTR"/>'
+		    r_t='<ION_VARIABLE NAME="$RTS"/>'
+		    params='<ION_VARIABLE NAME="$PARAMS"/>'
+		    onoff='<ION_VARIABLE NAME="$ONOFFS"/>'
+		    yr='<ION_VARIABLE NAME="$YEAR"/>'
+		    mnth='<ION_VARIABLE NAME="$MONTH"/>'
+		    dy='<ION_VARIABLE NAME="$DAY"/>'
+		    ndays='<ION_VARIABLE NAME="$NDAYSP"/>'
+		    sdt='<ION_VARIABLE NAME="$SDT"/>'
+		    edt='<ION_VARIABLE NAME="$EDT"/>'
+		    cmd="&nbsp;&nbsp;<A HREF=\"javascript:openIDLCommandWindow('"+kinst+"','"+r_t+"','"+params+"','"+onoff+"','"+yr+"','"+mnth+"','"+dy+"','"+ndays+"','"+sdt+"','"+edt+"',0)\">IDL Command</A>"
+		    document.writeln(cmd)
+		</SCRIPT>
+
+		<BR />
+		<BR />
+	    </ION_FORM>
+	</ION_IF>
+    </ION_BODY>
+</ION_SCRIPT>

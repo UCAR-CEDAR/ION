@@ -1,0 +1,208 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="INSTR" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="PARAMS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="NUMSELECTED" VALUE="0" TYPE="INT" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="NUMP" VALUE="0" TYPE="INT" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="ONOFFS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="MINS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="MAXS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="LABELS" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="YEAR" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="MONTH" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="DAY" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="NDAYSP" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	    <VARIABLE_DECL NAME="SDT" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="EDT" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>  
+	    <VARIABLE_DECL NAME="PLOTSIZE" VALUE="0" TYPE="INT" PERSIST="FALSE"/>
+	</VARIABLES>
+	<EVENTS>
+	    <EVENT_DECL NAME="REPLOT" ACTION="ion:///plot_submit.ion"/>
+	</EVENTS>
+	<SCRIPT LANGUAGE="JavaScript" SRC="/cedarplot.js"></SCRIPT>
+	<STYLE>
+	    .footer {
+	       font-family: Verdana, Arial, Helvetica, sans-serif;
+	       font-size: 10px;
+	       font-weight: normal;
+	       color: #212121;
+	       text-decoration: none;
+	       font-style: italic;
+	    }
+	</STYLE>
+    </ION_HEADER>
+    <ION_BODY>
+	<ION_IF EXPR="$Form.INSTR NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$INSTR=$Form.INSTR" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--KINST = <ION_VARIABLE NAME="$INSTR"/><BR />-->
+	<ION_IF EXPR="$Form.PARAM_LIST NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$PARAMS=$Form.PARAM_LIST" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--PARAMS = <ION_VARIABLE NAME="$PARAMS"/><BR />-->
+	<ION_IF EXPR="$Form.NUMSELECTED NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$NUMSELECTED=$Form.NUMSELECTED" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--NUMSELECTED = <ION_VARIABLE NAME="$NUMSELECTED"/><BR />-->
+	<ION_IF EXPR="$NUMP EQ 0">
+	    <ION_EVALUATE EXPR="$NUMP=$NUMSELECTED" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--NUMP = <ION_VARIABLE NAME="$NUMP"/><BR />-->
+	<ION_IF EXPR="$Form.ONOFFS NE 'undef'">
+	    <ION_EVALUATE EXPR="$ONOFFS=$Form.ONOFFS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--ONOFFS = <ION_VARIABLE NAME="$ONOFFS"/><BR />-->
+	<ION_IF EXPR="$Form.MINS NE 'undef'">
+	    <ION_EVALUATE EXPR="$MINS=$Form.MINS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--MINS = <ION_VARIABLE NAME="$MINS"/><BR />-->
+	<ION_IF EXPR="$Form.MAXS NE 'undef'">
+	    <ION_EVALUATE EXPR="$MAXS=$Form.MAXS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--MAXS = <ION_VARIABLE NAME="$MAXS"/><BR />-->
+	<ION_IF EXPR="$Form.LABELS NE 'undef'">
+	    <ION_EVALUATE EXPR="$LABELS=$Form.LABELS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--LABELS = <ION_VARIABLE NAME="$LABELS"/><BR />-->
+	<ION_IF EXPR="$Form.YEAR NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$YEAR=$Form.YEAR" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.MONTH NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$MONTH=$Form.MONTH" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.DAY NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$DAY=$Form.DAY" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.NDAYSP NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$NDAYSP=$Form.NDAYSP" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.SDT NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$SDT=$Form.SDT" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.EDT NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$EDT=$Form.EDT" DISPLAY="FALSE"/>
+	</ION_IF>
+
+	<ION_FORM NAME="plot_form" METHOD="POST" onsubmit="return checkForm($NUMP)">
+	<ION_EVALUATE EXPR="$NUMSELECTED=$NUMSELECTED+1" DISPLAY="FALSE"/>
+	<ION_EVALUATE EXPR="$PLOTSIZE=$NUMSELECTED*300" DISPLAY="FALSE"/>
+
+	<TABLE ALIGN="CENTER" WIDTH="800" CELLPADDING="0" CELLSPACING="0" BORDER="1">
+	<!-- The first row to display is the time form. This will allow the
+	   - user to select different date ranges WITHIN THE DATE RANGE
+	   - SELECTED DURING DATA SELECTION. SDT is the starting date/time
+	   - selected and EDT is the ending date/time selected. But we still
+	   - keep track of the year, month, day, and ndays originally
+	   - selected during data selection.
+	-->
+	<TR>
+	<TD WIDTH="800" COLSPAN="2" BGCOLOR="black" ALIGN="CENTER">
+	    <IMG SRC="http://www.vsto.org/images/header-home.jpg" BORDER="0">
+	</TD>
+	</TR>
+	<TR>
+	<TD WIDTH="800" COLSPAN="2">
+	    <BR />
+	    <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="1">
+		<TR>
+		    <TD WIDTH="100%">
+			<ION_DATA_OUT PRE="FALSE">
+			    <IDL>
+				.r cedar_catalog_setup
+				cedar_catalog_setup
+				.r time_form.pro
+				time_form,'$MONTH','$DAY','$YEAR','$NDAYSP','$SDT','$EDT'
+			    </IDL>
+			</ION_DATA_OUT>
+			<INPUT TYPE="HIDDEN" VALUE='<ION_VARIABLE NAME="$SDT"/>' NAME="SDT">
+			<INPUT TYPE="HIDDEN" VALUE='<ION_VARIABLE NAME="$EDT"/>' NAME="EDT">
+			<ION_BUTTON EVENT="REPLOT" LABEL="RePlot" TYPE="BUTTON" PERSIST="TRUE" />
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+	</TR>
+	<!-- The final row contains two columns. The left column contains
+	   - the plot and the right column contains the plot form for the
+	   - parameters. The idl program build_param_struct determines what
+	   - parameters are being plotted, what their min and max values
+	   - are, their label and puts all of this information into
+	   - param_struct. This structure is then passed to doplot.pro, which
+	   - does the plotting. Also passed to doplot.pro is the SDT and EDT
+	   - (starting date/time and ending date/time) selected by the user
+	   - (at first it's just the year, month, day, ndays selected during
+	   - data selection). In the right column we also call param_form to
+	   - build the parameter form to allow the user to change
+	   - information about each parameter.
+	-->
+	<TR>
+	<TD WIDTH="600" VALIGN="TOP">
+	<ION_IMAGE LABEL="Loading Image. This might take a few minutes." TYPE="DIRECT" WIDTH="600" HEIGHT="$PLOTSIZE" BORDER="0">
+	<!--<ION_DATA_OUT PRE="FALSE">-->
+	    <IDL>
+		.r cedar_catalog_setup
+		cedar_catalog_setup
+		.r build_param_struct.pro
+		build_param_struct,$INSTR,'undef','$PARAMS','$ONOFFS','$MINS','$MAXS','$LABELS',$YEAR,$MONTH,$DAY,$NDAYSP,1ul,param_struct
+		.r doplot.pro
+		doplot,$INSTR,'undef',param_struct,$YEAR,$MONTH,$DAY,$NDAYSP,'$SDT','$EDT',0,0ul
+	    </IDL>
+	</ION_IMAGE>
+	<!--</ION_DATA_OUT>-->
+	</TD>
+	<TD WIDTH="200" VALIGN="TOP">
+	<TABLE WIDTH="200" CELLPADDING="0" CELLSPACING="0" BORDER="1">
+	    <ION_DATA_OUT PRE="FALSE">
+		<IDL>
+		    .r cedar_catalog_setup
+		    cedar_catalog_setup
+		    .r build_param_struct.pro
+		    build_param_struct,$INSTR,'undef','$PARAMS','$ONOFFS','$MINS','$MAXS','$LABELS',$YEAR,$MONTH,$DAY,$NDAYSP,1ul,param_struct
+		    .r param_form.pro
+		    param_form,param_struct
+		</IDL>
+	    </ION_DATA_OUT>
+	</TABLE>
+	<INPUT TYPE="HIDDEN" NAME="ONOFFS">
+	<INPUT TYPE="HIDDEN" NAME="NUMSELECTED">
+	</TD>
+	</TR>
+	<TR>
+	<TD WIDTH="800" COLSPAN="2">
+	    <table cellpadding="5" cellspacing="5" width="600" border="0" align="center">
+		<tr>
+		    <td class="footer" align="center">
+			<a href="http://www.vsto.org/">VSTO Home</a> |
+			<a href="http://vsto.hao.ucar.edu/">VSTO Project Web Site</a> |
+			<a href="mailto:vsto-support@ucar.edu">Contact Us</a> 
+		    </td>
+		</tr>
+		<tr>
+		    <td class="footer" align="center">VSTO Portal Software version 1.0 &copy; UCAR, all rights reserved.</td>
+		</tr>
+		<tr>
+		    <td class="footer" align="center"> Virtual Solar Terrestrial Observatory, funded by the <a href="http://www.nsf.gov">National Science Fundation </a> </td>
+		</tr>
+	    </table>
+	</TD>
+	</TR>
+	</TABLE>
+	</ION_FORM>
+	<!--
+	<ION_IMAGE TYPE="DIRECT" WIDTH="600" HEIGHT="$PLOTSIZE" BORDER="0">
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+		.r cedar_catalog_setup
+		cedar_catalog_setup
+		.r build_param_struct.pro
+		build_param_struct,$INSTR,'undef','$PARAMS','$ONOFFS','$MINS','$MAXS','$LABELS',$YEAR,$MONTH,$DAY,$NDAYSP,1ul,param_struct
+		.r doplot.pro
+		doplot,$INSTR,'undef',param_struct,$YEAR,$MONTH,$DAY,$NDAYSP,'$SDT','$EDT',0,0ul
+	    </IDL>
+	</ION_IMAGE>
+	</ION_DATA_OUT>
+	-->
+    </ION_BODY>
+</ION_SCRIPT>
+

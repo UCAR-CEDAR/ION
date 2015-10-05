@@ -1,0 +1,134 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="KINST" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="RTS" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="PARAMS" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="ONOFFS" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="YEAR" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="MONTH" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="DAY" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="NDAYS" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="SDT" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="EDT" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="ISPLOT" VALUE="0" TYPE="INT" PERSIST="FALSE"/>
+	</VARIABLES>
+    </ION_HEADER>
+    <ION_BODY BACKGROUND="/images/Texture_lt_gray_004.jpg" TEXT="black">
+	<ION_IF EXPR="$Form.KINST NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$KINST=$Form.KINST" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--KINST = <ION_VARIABLE NAME="$KINST"/>-->
+	<ION_IF EXPR="$Form.RTS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$RTS=$Form.RTS" DISPLAY="FALSE"/>
+	<ION_ELSE />
+ 	    <ION_EVALUATE EXPR="$RTS='undef'" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />RTS = <ION_VARIABLE NAME="$RTS"/>-->
+	<ION_IF EXPR="$Form.PARAMS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$PARAMS=$Form.PARAMS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />PARAMS = <ION_VARIABLE NAME="$PARAMS"/>-->
+	<ION_IF EXPR="$Form.ONOFFS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$ONOFFS=$Form.ONOFFS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />ONOFFS = <ION_VARIABLE NAME="$ONOFFS"/>-->
+	<ION_IF EXPR="$Form.YEAR NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$YEAR=$Form.YEAR" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />YEAR = <ION_VARIABLE NAME="$YEAR"/>-->
+	<ION_IF EXPR="$Form.MONTH NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$MONTH=$Form.MONTH" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />MONTH = <ION_VARIABLE NAME="$MONTH"/>-->
+	<ION_IF EXPR="$Form.DAY NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$DAY=$Form.DAY" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />DAY = <ION_VARIABLE NAME="$DAY"/>-->
+	<ION_IF EXPR="$Form.NDAYS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$NDAYS=$Form.NDAYS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />NDAYS = <ION_VARIABLE NAME="$NDAYS"/>-->
+	<ION_IF EXPR="$Form.SDT NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$SDT=$Form.SDT" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />SDT = <ION_VARIABLE NAME="$SDT"/>-->
+	<ION_IF EXPR="$Form.EDT NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$EDT=$Form.EDT" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />EDT = <ION_VARIABLE NAME="$EDT"/>-->
+	<ION_IF EXPR="$Form.ISPLOT NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$ISPLOT=$Form.ISPLOT" DISPLAY="FALSE"/>
+	</ION_IF>
+	<!--<BR />ISPLOT = <ION_VARIABLE NAME="$ISPLOT"/>-->
+
+	<DIV STYLE="font-weight:normal;font-size:10pt;font-family:Verdana;">
+	    The following is an IDL command that you can enter into an IDL
+	    session to retrieve CEDAR data into an IDL structure. From there
+	    you will be able to operate on the data in whatever way you
+	    like. For example:
+	    <BR />
+	    <BR />
+	    IDL&gt; help,data,/struct
+	    <BR />
+	    <BR />
+	    <SCRIPT LANGUAGE="JavaScript">
+		<!--
+		var theCookie = document.cookie ;
+		var cookieHeader = "OpenDAP.remoteuser=" ;
+		var cookieStart = theCookie.indexOf( cookieHeader ) ;
+		if( cookieStart == -1 )
+		{
+		    document.write("You are currently not logged in. Please follow <A HREF=\"https://cedarweb.hao.ucar.edu:443/cgi-bin/ion-p?page=login.ion\" TARGET=\"_blank\"> this link</A> to log in. Once logged in, close the login screen and then refresh this page.<BR /><BR />")
+		}
+		//-->
+	    </SCRIPT>
+	    Here is your IDL command:
+	    <BR />
+	    <BR />
+	</DIV>
+	<DIV STYLE="font-weight:normal;font-size:10pt;font-family:Verdana;">
+	    <ION_DATA_OUT PRE="FALSE">
+		<IDL>
+		    .r cedar_catalog_setup
+		    cedar_catalog_setup
+		    .r idlcommand.pro
+		    idlcommand,$KINST,'$RTS','$PARAMS','$ONOFFS',$YEAR,$MONTH,$DAY,$NDAYS,'$SDT','$EDT',$ISPLOT,DEBUG=0ul
+		</IDL>
+	    </ION_DATA_OUT>
+	    <SCRIPT LANGUAGE="JavaScript">
+		<!--
+		var theCookie = document.cookie ;
+		var cookieHeader = "OpenDAP.remoteuser=" ;
+		var cookieStart = theCookie.indexOf( cookieHeader ) ;
+		if( cookieStart != -1 )
+		{
+		    var currCookie = theCookie.substring( cookieStart + cookieHeader.length ) ;
+		    var cookieEnd = currCookie.indexOf( ";" ) ;
+		    if( cookieEnd != -1 )
+		    {
+			var cookieVal = currCookie.substring( 0, cookieEnd ) ;
+		    }
+		    else
+		    {
+			var cookieVal = currCookie ;
+		    }
+		}
+		else
+		{
+		    var cookieVal = "username" ;
+		}
+		document.write("'"+cookieVal+"'")
+		//-->
+	    </SCRIPT>
+	    ,data)
+	</DIV>
+	<DIV STYLE="font-weight:normal;font-size:10pt;font-family:Verdana;">
+	    <BR />
+	    <BR />
+	    In order to use this command you must first get three software packages. The first is libdap, which can be downloaded at <A HREF="http://www.opendap.org" TARGET="cedar_aux">http://www.opendap.org</A>. <A HREF="mailto:cedar_db@hao.ucar.edu">Pleace contact us</A> in order to get the other two packages, which are an idl-client from opendap and cedar idl code.
+	</DIV>
+
+    </ION_BODY>
+</ION_SCRIPT>
+

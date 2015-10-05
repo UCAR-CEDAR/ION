@@ -1,0 +1,163 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="NUMSELECTED" VALUE="0" TYPE="INT" PERSIST="FALSE"/>
+	    <VARIABLE_DECL NAME="PLOTSIZE" VALUE="0" TYPE="INT" PERSIST="FALSE"/>
+	</VARIABLES>
+    </ION_HEADER>
+    <ION_BODY>
+	<ION_IF EXPR="$Form.PARAM_LIST NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$PARAMS=$Form.PARAM_LIST" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.MINS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$MINS=$Form.MINS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.MAXS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$MAXS=$Form.MAXS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.LABELS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$LABELS=$Form.LABELS" DISPLAY="FALSE"/>
+	</ION_IF>
+	<ION_IF EXPR="$Form.ONOFFS NE 'undef'">
+ 	    <ION_EVALUATE EXPR="$ONOFFS=$Form.ONOFFS" DISPLAY="FALSE"/>
+	</ION_IF>
+
+	<!-- Determine how many parameters have been selected to plot. This
+	   - will eventually determine the size of the image for the plot
+	-->
+	<ION_EVALUATE EXPR="$NUMSELECTED=$Form.NUMSELECTED" DISPLAY="FALSE"/>
+
+	<ION_IF EXPR="$NUMP EQ 0">
+	    <ION_EVALUATE EXPR="$NUMP=$NUMSELECTED" DISPLAY="FALSE"/>
+	</ION_IF>
+
+	<!-- Begin the form. onsubmit will call checkForm with the TOTAL
+	   - number of parameters, not just the number of selected parameters
+	   - because we must iterate through the the unselected parameters (to
+	   - see if they have been selected) and the selected parameters to
+	   - display their information.
+	-->
+	<ION_FORM NAME="plot_form" METHOD="POST" onsubmit="return checkForm($NUMP)">
+
+	<!-- Determine the size of the plot using the number of parameters
+	   - being displayed plus one. The plus one is for the text information
+	   - at the top of the plot and, on the right, unselected parameter
+	   - information. If 300 is changed here then you must change the
+	   - information in plot_form.pro for the height of the cells.
+	-->
+	<ION_EVALUATE EXPR="$NUMSELECTED=$NUMSELECTED+1" DISPLAY="FALSE"/>
+	<ION_EVALUATE EXPR="$PLOTSIZE=$NUMSELECTED*300" DISPLAY="FALSE"/>
+
+	<TABLE WIDTH="800" CELLPADDING="0" CELLSPACING="0" BORDER="0">
+	<!-- The first row to display is the data links and the link to
+	   - create the postscript version of the plot.
+	-->
+	<TR>
+	<TD WIDTH="800" COLSPAN="2">
+	    <ION_DATA_OUT PRE="FALSE">
+		<IDL>
+		    .r cedar_catalog_setup
+		    cedar_catalog_setup
+		    .r SubmitP_plot.pro
+		    SubmitP_plot, $INSTR, $RTS, '$PARAMS', $YEAR, $MONTH, $DAY, $NDAYSP
+		</IDL>
+	    </ION_DATA_OUT>
+
+	    &nbsp;&nbsp; <ION_LINK EVENT="PRINT_PLOT">Create postscript of plot</ION_LINK>
+
+	    <SCRIPT LANGUAGE="JavaScript">
+		kinst='<ION_VARIABLE NAME="$INSTR"/>'
+		r_t='<ION_VARIABLE NAME="$RTS"/>'
+		params='<ION_VARIABLE NAME="$PARAMS"/>'
+		onoff='<ION_VARIABLE NAME="$ONOFFS"/>'
+		yr='<ION_VARIABLE NAME="$YEAR"/>'
+		mnth='<ION_VARIABLE NAME="$MONTH"/>'
+		dy='<ION_VARIABLE NAME="$DAY"/>'
+		ndays='<ION_VARIABLE NAME="$NDAYSP"/>'
+		sdt='<ION_VARIABLE NAME="$SDT"/>'
+		edt='<ION_VARIABLE NAME="$EDT"/>'
+		cmd="&nbsp;&nbsp;<A HREF=\"javascript:openIDLCommandWindow('"+kinst+"','"+r_t+"','"+params+"','"+onoff+"','"+yr+"','"+mnth+"','"+dy+"','"+ndays+"','"+sdt+"','"+edt+"',1)\">IDL Command</A>"
+		document.writeln(cmd)
+	    </SCRIPT>
+
+	</TD>
+	</TR>
+	<!-- The second row to display is the time form. This will allow the
+	   - user to select different date ranges WITHIN THE DATE RANGE
+	   - SELECTED DURING DATA SELECTION. SDT is the starting date/time
+	   - selected and EDT is the ending date/time selected. But we still
+	   - keep track of the year, month, day, and ndays originally
+	   - selected during data selection.
+	-->
+	<TR>
+	<TD WIDTH="800" COLSPAN="2">
+	    <BR />
+	    <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="1">
+		<TR>
+		    <TD WIDTH="100%">
+			<ION_DATA_OUT PRE="FALSE">
+			    <IDL>
+				.r cedar_catalog_setup
+				cedar_catalog_setup
+				.r time_form.pro
+				time_form,'$MONTH','$DAY','$YEAR','$NDAYSP','$SDT','$EDT'
+			    </IDL>
+			</ION_DATA_OUT>
+			<INPUT TYPE="HIDDEN" VALUE='<ION_VARIABLE NAME="$SDT"/>' NAME="SDT">
+			<INPUT TYPE="HIDDEN" VALUE='<ION_VARIABLE NAME="$EDT"/>' NAME="EDT">
+			<ION_BUTTON EVENT="REPLOT" LABEL="RePlot" TYPE="BUTTON" PERSIST="TRUE" />
+		    </TD>
+		</TR>
+	    </TABLE>
+	</TD>
+	</TR>
+	<!-- The final row contains two columns. The left column contains
+	   - the plot and the right column contains the plot form for the
+	   - parameters. The idl program build_param_struct determines what
+	   - parameters are being plotted, what their min and max values
+	   - are, their label and puts all of this information into
+	   - param_struct. This structure is then passed to doplot.pro, which
+	   - does the plotting. Also passed to doplot.pro is the SDT and EDT
+	   - (starting date/time and ending date/time) selected by the user
+	   - (at first it's just the year, month, day, ndays selected during
+	   - data selection). In the right column we also call param_form to
+	   - build the parameter form to allow the user to change
+	   - information about each parameter.
+	-->
+	<TR>
+	<TD WIDTH="600" VALIGN="TOP">
+	<ION_IMAGE LABEL="Loading Image. This might take a few minutes." TYPE="DIRECT" WIDTH="600" HEIGHT="$PLOTSIZE" BORDER="0">
+	<!--<ION_DATA_OUT PRE="FALSE">-->
+	    <IDL>
+		.r cedar_catalog_setup
+		cedar_catalog_setup
+		.r build_param_struct.pro
+		build_param_struct,$INSTR,STRING($RTS),'$PARAMS','$ONOFFS','$MINS','$MAXS','$LABELS',1,1,1,1,1ul,param_struct
+		.r doplot.pro
+		doplot,$INSTR,STRING($RTS),param_struct,$YEAR,$MONTH,$DAY,$NDAYSP,'$SDT','$EDT',0,0ul
+	    </IDL>
+	</ION_IMAGE>
+	<!--</ION_DATA_OUT>-->
+	</TD>
+	<TD WIDTH="200" VALIGN="TOP">
+	<TABLE WIDTH="200" CELLPADDING="0" CELLSPACING="0" BORDER="1">
+	    <ION_DATA_OUT PRE="FALSE">
+		<IDL>
+		    .r cedar_catalog_setup
+		    cedar_catalog_setup
+		    .r build_param_struct.pro
+		    build_param_struct,$INSTR,STRING($RTS),'$PARAMS','$ONOFFS','$MINS','$MAXS','$LABELS',1,1,1,1,1ul,param_struct
+		    .r param_form.pro
+		    param_form,param_struct
+		</IDL>
+	    </ION_DATA_OUT>
+	</TABLE>
+	<INPUT TYPE="HIDDEN" NAME="ONOFFS">
+	<INPUT TYPE="HIDDEN" NAME="NUMSELECTED">
+	</TD>
+	</TR>
+	</TABLE>
+	</ION_FORM>
+    </ION_BODY>
+</ION_SCRIPT>
+

@@ -1,0 +1,111 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="NDAYSP" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<P><b> You have chosen the following selections:</b></p>
+<p><font color="darkblue"><b>Instrument:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r listinstrument.pro
+          listinstrument, $INSTR
+       </IDL>
+</ION_DATA_OUT></FONT></P>
+
+<ION_IF EXPR="$Form.DAY NE 'undef' ">
+   <ION_EVALUATE EXPR="$DAY=$Form.DAY" DISPLAY="FALSE"/>
+<ION_ELSEIF EXPR="$DAY NE 'undef'"/>
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$DAY=-500" DISPLAY="FALSE"/>
+   <p> <font color="black"> Please choose a <b>starting date</b>. <font color="purple">(Use the back button.)</font></p>
+</ION_IF>
+
+<ION_IF EXPR="$Form.NDAYS NE 'undef' OR $Form.NDAYS NE ''">
+   <ION_EVALUATE EXPR="$NDAYSP=$Form.NDAYS" DISPLAY="FALSE"/>
+<ION_ELSEIF EXPR="$NDAYSP NE 'undef'" />
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$NDAYSP=-500" DISPLAY="FALSE"/>
+   <p> Please enter a <b>date range</b>. Use the back button.</p>
+</ION_IF>
+
+<ION_IF EXPR="$Form.DAY NE 'undef' AND ($Form.NDAYS EQ '' OR $Form.NDAYS EQ 'undef' OR $Form.NDAYS EQ ' ')">
+   <ION_EVALUATE EXPR="$NDAYSP=-500" DISPLAY="FALSE"/>
+   <p><font color="black"> Please enter a <b>date range</b>. <font color="purple">(Use the back button.)</font></p>
+</ION_IF>
+
+<ION_IF EXPR="($DAY NE '-500' AND $NDAYSP NE '-500' AND $NDAYSP NE 'undef')">
+
+<P><b>Starting Date:</b> <FONT SIZE="3" COLOR="BLUE">
+<ION_IF EXPR="$MONTH EQ '1'"> January
+<ION_ELSEIF EXPR="$MONTH EQ '2'"/> February
+<ION_ELSEIF EXPR="$MONTH EQ '3'"/> March
+<ION_ELSEIF EXPR="$MONTH EQ '4'"/> April
+<ION_ELSEIF EXPR="$MONTH EQ '5'"/> May
+<ION_ELSEIF EXPR="$MONTH EQ '6'"/> June
+<ION_ELSEIF EXPR="$MONTH EQ '7'"/> July
+<ION_ELSEIF EXPR="$MONTH EQ '8'"/> August
+<ION_ELSEIF EXPR="$MONTH EQ '9'"/> September
+<ION_ELSEIF EXPR="$MONTH EQ '10'"/> October
+<ION_ELSEIF EXPR="$MONTH EQ '11'"/> November
+<ION_ELSE/> December
+</ION_IF>
+<ION_VARIABLE NAME="$DAY"/>, <ION_VARIABLE NAME="$YEAR" /></FONT></P>
+
+<P><b>Ending Date:</b> <FONT SIZE="3" COLOR="BLUE">
+
+<ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r enddate.pro
+          enddate,$YEAR,$MONTH,$DAY,$NDAYSP
+       </IDL>
+</ION_DATA_OUT>
+</FONT></font></P>
+
+<ION_FORM NAME="SUBMIT" METHOD="POST">
+    <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+    <ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r Submit.pro
+          Submit, $INSTR, $YEAR, $MONTH, $DAY, $NDAYSP
+       </IDL>
+    </ION_DATA_OUT>
+
+    <SCRIPT LANGUAGE="JavaScript">
+	kinst='<ION_VARIABLE NAME="$INSTR"/>'
+	r_t='undef'
+	params='undef'
+	onoff='undef'
+	yr='<ION_VARIABLE NAME="$YEAR"/>'
+	mnth='<ION_VARIABLE NAME="$MONTH"/>'
+	dy='<ION_VARIABLE NAME="$DAY"/>'
+	ndays='<ION_VARIABLE NAME="$NDAYSP"/>'
+	sdt='undef'
+	edt='undef'
+	cmd="&nbsp;&nbsp;<A HREF=\"javascript:openIDLCommandWindow('"+kinst+"','"+r_t+"','"+params+"','"+onoff+"','"+yr+"','"+mnth+"','"+dy+"','"+ndays+"','"+sdt+"','"+edt+"',0)\">IDL Command</A>"
+	document.writeln(cmd)
+    </SCRIPT>
+
+    <BR />
+    <BR />
+    You can further narrow your selection by choosing specific 
+    <ION_BUTTON onClick="submitClick('SUBMIT','GET_R')" EVENT="SELECT" TYPE="BUTTON" LABEL="Record Type" />
+    for this data request.
+    <BR />
+    <BR />
+</ION_FORM>
+
+</ION_IF>
+
+</ION_BODY>
+
+</ION_SCRIPT>

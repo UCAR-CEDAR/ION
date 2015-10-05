@@ -1,0 +1,40 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="YEAR" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<ION_IF EXPR="$Form.YEAR NE 'undef'">
+   <ION_EVALUATE EXPR="$YEAR=$Form.YEAR" DISPLAY="FALSE"/>
+
+<P><b>Year</b>: <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$YEAR" /></FONT></P>
+
+<ION_FORM NAME="MONTH" METHOD="POST">
+    <p><b>Step 2/4:</b> Please select a <b>month</b>.</p>
+    <ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r calendar_month.pro
+          calendar_month, $YEAR
+       </IDL>
+    </ION_DATA_OUT>
+   <P>Click <b>proceed</b> to select a day.</P>
+   <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+   <ION_BUTTON onClick="submitClick('MONTH','SELECT_D')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+   <BR />
+   <BR />
+</ION_FORM>
+
+
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$YEAR=-500" DISPLAY="FALSE"/>
+   <P> Please choose a <b>year</b>. <font color="purple">(Use the back button.)</font>
+</p>
+</ION_IF> 
+</ION_BODY>
+
+</ION_SCRIPT>

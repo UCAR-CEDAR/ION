@@ -1,0 +1,43 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLE_DECL NAME="PLOT_FILE" VALUE="'undef'" TYPE="STR" PERSIST="FALSE"/>
+    </ION_HEADER>
+    <ION_BODY>
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+		.r cedar_catalog_setup
+		cedar_catalog_setup
+		.r SubmitP_plot.pro
+		SubmitP_plot, $INSTR, $RTS, '$PARAMS', $YEAR, $MONTH, $DAY, $NDAYSP
+	    </IDL>
+	</ION_DATA_OUT>
+
+	<ION_EVALUATE EXPR="$PLOT_FILE='plot'+$ION.uniqueID+'.ps'" DISPLAY="FALSE" />
+	<ION_DATA_OUT PRE="FALSE">
+	    <IDL>
+		.r cedar_catalog_setup
+		cedar_catalog_setup
+
+		devicesaved=!d.name
+
+		set_plot, 'PS'
+
+		device, filename='/toshi/ftp/cedarweb/$PLOT_FILE',xoff=0.5,yoff=2.5,xsize=7.5,ysize=6.0,/INCHES,/TIMES,/COLOR
+
+		!p.font=0
+
+		.r build_param_struct.pro
+		build_param_struct,$INSTR,STRING($RTS),'$PARAMS','$ONOFFS','$MINS','$MAXS','$LABELS',1,1,1,1,1ul,param_struct
+		.r doplot.pro
+		doplot,$INSTR,STRING($RTS),param_struct,$YEAR,$MONTH,$DAY,$NDAYSP,'$SDT','$EDT',1,0ul
+
+		device, /close
+
+		set_plot,devicesaved
+
+		print,'<BR /><BR /><A HREF="http://download.hao.ucar.edu/cedarweb/$PLOT_FILE">Download postscript file of plot</A><BR /><BR />&nbsp;'
+	    </IDL>
+	</ION_DATA_OUT>
+    </ION_BODY>
+</ION_SCRIPT>
+

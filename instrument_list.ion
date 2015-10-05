@@ -1,0 +1,45 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="verb" VALUE="'undef'" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<ION_IF EXPR="$Form.IV NE 'undef'">
+   <ION_EVALUATE EXPR="$verb=$Form.IV" DISPLAY="FALSE"/>
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$verb=0" DISPLAY="FALSE"/>
+</ION_IF> 
+
+<p><b>Step 1/4:</b> Please select an <b>instrument</b> from the list below:</p>
+
+<ION_FORM NAME="INSTRUMENT" METHOD="POST">
+    <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+    <SELECT NAME=INSTRUMENT_LIST SIZE=1>
+    <ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r instrument_list.pro
+          instrument_list, $verb
+       </IDL>
+    </ION_DATA_OUT>
+    </SELECT>
+<P>Reload the <b>instrument list</b> with one of the following possible combinations:</P>
+  <ION_RADIO NAME="IV" VALUE="0" DEFAULT/> Name  <BR>
+  <ION_RADIO NAME="IV" VALUE="1" /> Instrument Code-Name  <BR>
+  <ION_RADIO NAME="IV" VALUE="2" /> Instrument Number-Instrument Code-Name <BR><BR>
+  <ION_BUTTON onClick="submitClick('INSTRUMENT','RELOAD_I')" EVENT="SELECT" TYPE="BUTTON" LABEL="Reload Instruments" />
+  <BR />
+  <P>Click <b>proceed</b> to select dates.</P>
+  <ION_BUTTON onClick="submitClick('INSTRUMENT','SELECT_Y')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+  <BR />
+  <BR />
+</ION_FORM>
+
+
+</ION_BODY>
+
+</ION_SCRIPT>

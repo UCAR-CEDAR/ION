@@ -1,0 +1,75 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+	<VARIABLES>
+	    <VARIABLE_DECL NAME="NDAYSP" VALUE="undef" TYPE="STR" PERSIST="TRUE"/>
+	</VARIABLES>
+	<EVENTS>
+	</EVENTS>
+    </ION_HEADER>
+
+<ION_BODY>
+
+<ION_IF EXPR="$Form.DAY NE 'undef'">
+   <ION_EVALUATE EXPR="$DAY=$Form.DAY" DISPLAY="FALSE"/>
+<!--P><B>Starting day</B>:  <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$DAY" /></FONT></P-->
+<ION_ELSE />
+   <ION_EVALUATE EXPR="$DAY=-500" DISPLAY="FALSE"/>
+<P><B>Year</B>:  <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$YEAR" /></FONT></P>
+<P><B>Month</B>:  <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$MONTH" /></FONT></P>
+   Please choose a <b>starting day</b>. <font color="purple">(Use the back button.)</font>
+</ION_IF> 
+
+
+<ION_IF EXPR="($Form.NDAYS NE '' OR $Form.NDAYS NE 'undef')">
+   <ION_EVALUATE EXPR="$NDAYSP=$Form.NDAYS" DISPLAY="FALSE"/>
+<ION_ELSE/>
+   <ION_EVALUATE EXPR="$NDAYSP=-500" DISPLAY="FALSE"/>
+   <p> Please enter a <b>date range</b>. Use the back button.</p>
+</ION_IF> 
+
+<ION_IF EXPR="$Form.DAY NE 'undef' AND ($Form.NDAYS EQ '' OR $Form.NDAYS EQ ' ' OR $Form.NDAYS EQ 'undef')">
+   <ION_EVALUATE EXPR="$NDAYSP=-500" DISPLAY="FALSE"/>
+<P><B>Year</B>:  <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$YEAR" /></FONT></P>
+<P><B>Month</B>:  <FONT SIZE="3" COLOR="BLUE"><ION_VARIABLE NAME="$MONTH" /></FONT></P>
+   <p> Please enter a <b>date range</b>. <font color="purple">(Using back button.)</font></p>
+</ION_IF> 
+
+<ION_IF EXPR="$DAY NE '-500' AND $NDAYSP NE '-500'">
+<ION_FORM NAME="INSTRUMENT" METHOD="POST">
+<P><B>Starting Date</B>:  <FONT SIZE="3" COLOR="BLUE">
+<ION_IF EXPR="$MONTH EQ '1'"> January
+<ION_ELSEIF EXPR="$MONTH EQ '2'" /> February
+<ION_ELSEIF EXPR="$MONTH EQ '3'" /> March
+<ION_ELSEIF EXPR="$MONTH EQ '4'" /> April
+<ION_ELSEIF EXPR="$MONTH EQ '5'" /> May
+<ION_ELSEIF EXPR="$MONTH EQ '6'" /> June
+<ION_ELSEIF EXPR="$MONTH EQ '7'" /> July
+<ION_ELSEIF EXPR="$MONTH EQ '8'" /> August
+<ION_ELSEIF EXPR="$MONTH EQ '9'" /> September
+<ION_ELSEIF EXPR="$MONTH EQ '10'" /> October
+<ION_ELSEIF EXPR="$MONTH EQ '11'" /> November
+<ION_ELSE/> December
+</ION_IF>
+<ION_VARIABLE NAME="$DAY" />, <ION_VARIABLE NAME="$YEAR"/></FONT></P>
+
+<P><b>Step 4/4:</b> Please select an <b>instrument</b> data for <FONT COLOR="BLUE"><ION_VARIABLE NAME="$NDAYSP" /></FONT> days.</P>
+    <ION_DATA_OUT PRE="FALSE">
+       <IDL>
+          .r cedar_catalog_setup
+          cedar_catalog_setup
+          .r instrument_with_calendar.pro
+          instrument_with_calendar, $YEAR, $MONTH, $DAY, $NDAYSP
+       </IDL>
+    </ION_DATA_OUT>
+    <P>Click <b>proceed</b> to generate your data request.<p>	
+    <INPUT TYPE="HIDDEN" NAME="SUBSELECT">
+    <ION_BUTTON onClick="submitClick('INSTRUMENT','SUBMIT_1')" EVENT="SELECT" TYPE="BUTTON" LABEL="Proceed" />
+    <BR />
+    <BR />
+</ION_FORM>
+</ION_IF>
+
+
+</ION_BODY>
+
+</ION_SCRIPT>

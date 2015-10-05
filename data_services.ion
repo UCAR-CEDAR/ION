@@ -1,0 +1,69 @@
+<ION_SCRIPT>
+
+<ION_HEADER>
+ <AUTHOR>Peter Fox</AUTHOR>
+ <APPLICATION>CEDARWEB data services splash page</APPLICATION>
+ <COPYRIGHT>UCAR, 2003</COPYRIGHT>
+ <DATE>Thu Sep 28 15:22:13 MDT 2000</DATE>
+ <LASTUPDATE>Fri Oct 31 10:38:12 MST 2003</LASTUPDATE>
+ <TITLE>The NCAR CEDAR Data Services Page </TITLE>
+ <!-- to do - include other DC metatags -->
+ <META NAME="description" CONTENT="The NCAR CEDAR System: an online database of upper atmosphere and model data, and geophysical indices">
+ <META NAME="keywords" CONTENT="CEDAR, NCAR, National Center for Atmospheric Research, NSF, database, upper atmosphere, HAO, High Altitude Observatory, Radar, Lidar, HF, HVF, MST, Michelson Interferometer, Incoherent Scattering">
+</ION_HEADER>
+
+<ION_BODY>
+
+<BR>
+<CENTER>
+<H3> CEDAR Data Services </H3>
+</CENTER>
+<BR>
+From the menu to the left you may 
+<UL>
+<LI>Fill out an access form to get a CEDARWEB login.</LI>
+<LI>See an overview of the entire data archive.</LI>
+<LI>Browse and customize the detailed data catalogs (good for the
+more experienced user). </LI>
+<LI>Browse the summary plots of data (organized by instrument
+and date, good for visual inspections). </LI>
+<LI>Search the catalog interactively, select, plot and download data
+(good for all level of users, guides you through selection by 
+instrument and/or time period of interest). </LI>
+<ul>
+<li><a href="http://www.hao.ucar.edu/documents/dbexamples.html" target="cedarweb_aux">
+Examples to get data from the Database</a>
+</ul>
+<LI>View the sources of data (details on all the instruments, indices,
+models, etc.).</LI>
+<LI>See what new data has been added recently. </LI>
+<LI>Request data via a form (for those who are having trouble with
+any of the interactive methods).</LI>
+<LI>Review the Rules of the Road which governs use of the data.</LI>
+<LI>Submit data (send us a form telling us about some data you'd
+like to place in the CEDAR DB). </LI>
+</UL>
+<BR>
+The CEDAR Data System is a cooperative project between the 
+<A HREF="http://www.hao.ucar.edu" TARGET="cedarweb_aux">
+<EM>High Altitude Observatory (HAO)</EM></A> 
+division of the <A HREF="http://www.ncar.ucar.edu" TARGET="cedarweb_aux">
+<EM>National Center for Atmospheric Research (NCAR)</EM></A>, the 
+<A HREF="http://www.nsf.gov/" TARGET="cedarweb_aux">
+<EM>National Science Foundation (NSF)</EM></A>, and numerous institutions 
+that provide upper atmosphere data and model output for community use. <BR>
+
+<P>
+Visit some other data systems with access to CEDAR community data.
+<UL>
+<LI><A HREF="http://www.openmadrigal.org" TARGET="cedarweb_aux">
+<EM>The OpenMadrigal System at Millstone Hill Observatory</EM>.</A> </LI>
+<LI><A HREF="http://www.superdarn.org" TARGET="cedarweb_aux">
+<EM>SUPERDarn Observatory</EM>.</A> </LI>
+<LI><A HREF="http://www.timed.jhuapl.edu" TARGET="cedarweb_aux">
+<EM>NASA/TIMED Mission</EM>.</A> </LI>
+</UL>
+<P><HR><P>
+<I>-- Revised 11 April 2006 by emery@ucar.edu</I>
+</ION_BODY>
+</ION_SCRIPT>

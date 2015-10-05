@@ -1,0 +1,15 @@
+<ION_SCRIPT>
+    <ION_HEADER>
+    </ION_HEADER>
+    <ION_BODY>
+	<ION_IMAGE TYPE="DIRECT" WIDTH="600" HEIGHT="300" BORDER="0">
+	<!--<ION_DATA_OUT PRE="FALSE">-->
+	    <IDL>
+		.r dplot.pro
+		dplot
+	    </IDL>
+	</ION_IMAGE>
+	<!--</ION_DATA_OUT>-->
+    </ION_BODY>
+</ION_SCRIPT>
+
