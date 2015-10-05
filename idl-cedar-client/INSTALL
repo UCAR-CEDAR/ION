@@ -1,0 +1,87 @@
+
+	$Id: INSTALL 18355 2008-04-22 04:56:12Z pwest $
+
+Updated for version 1.0.0 of the idl-cedar-client idl source
+
+Installing the idl source
+
+---------------------------------------------------------------------------
+
+INSTALLING THE SOFTWARE
+BUILD REQUIREMENTS
+NOTES
+CONFIGURATION AND TESTING
+
+---------------------------------------------------------------------------
+
+INSTALLING THE SOFTWARE
+
+  To install the IDL source files, follow these steps:
+
+  0. Please skim BUILD REQUIREMENTS and NOTES sections of this file before
+     reporting problems. Make sure you read over the CONFIGURATION AND
+     TESTING section!
+     Thanks.
+
+  1. Type `./configure' at the system prompt. On some systems you may have
+     to type `sh configure'.
+
+  3. Type `make install' to install the idl source files. The package installs
+     in /usr/local/share/idl by default.  If you would like to change this
+     use the --prefix=<install_dir> option to configure. This will place the
+     idl source files in /install_dir/share/idl. If you need the idl source
+     to go to a different location, please use the --with-pro=<directory>
+     option to configure. This will place the idl source in the specified
+     directory.
+
+Building from Our SVN Repository
+
+  If you are building from a SVN checkout, run 'autoreconf --verbose' before
+  './configure; make install'. If you try to run autoconf by hand and wind
+  up with build files that don't work, use 'autoreconf --force --verbose'
+  and then './configure; make install'.
+
+AFTER INSTALLING
+
+  o Set IDL_PATH environment variable to include the location where the idl
+  source files were installed. For example, if installed in the default
+  location, be sure that IDL_PATH includes /usr/local/share/idl.
+
+BUILD REQUIREMENTS
+
+  o To build from a fresh SVN checkout, you'll need automake 1.9.2, autoconf
+    2.59 (2.57 will probably work and that's what's listed in the configure.ac
+    file).5.6. Earlier versions may work, but may cause problems,
+    particularly with the 'distcheck' target for make. Given those
+    requirements, use 'autoreconf --force --verbose' and then build as
+    described above.
+
+  o To use the idl source included in this package you will need
+     the idl-libdap-client version 1.0.0, which in turn requires
+     libdap-3.8.0.
+
+NOTES
+
+  o DEBUGGING AIDS
+
+    - To enable debugging add a parameter to the end of the cedar_data call,
+      like so:
+
+stat=cedar_data( 5340,'7001' ,$
+           ' 800|21|34|130|140|810|1410|1420|2506' ,$
+           ' DAYNO|UTH|AZM|ELM|VNLU|TN|VNE|VNN|RBRL' ,$
+           ' mfp920504a' ,$
+           ' 1992','05','04','1992','05','13', 'Pwest' ,data, DEBUG=1 )
+
+CONFIGURATION AND TESTING
+
+  o CONFIGURATION
+
+    - There is no special configuration for the idl source files
+
+  o TESTING
+
+    - Once you have installed the software you can run the idl command
+      included in this document above in an idl interpreter. It should
+      return you some data in the 'data' variable.
+

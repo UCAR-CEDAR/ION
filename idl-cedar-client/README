@@ -1,0 +1,37 @@
+This is the README file for the cedar-idl-client idl source
+
+This  group of idl source files allows users to take an idl command
+generated from the CedarWeb data portal and run it. The format of the
+command is as follows:
+
+IDL> stat=cedar_data( 5340,'7001' ,$
+            ' 800|21|34|130|140|810|1410|1420|2506' ,$
+            ' DAYNO|UTH|AZM|ELM|VNLU|TN|VNE|VNN|RBRL' ,$
+            ' mfp920504a' ,$
+            ' 1992','05','04','1992','05','13', 'username' ,data)
+% Compiled module: CEDAR_DATA.
+% Compiled module: STR_SEP.
+% Compiled module: GET_DODS.
+% Compiled module: GET_DODS_DAS.
+% Compiled module: DODS_ATTR.
+% Compiled module: DODS_FIX_NAME.
+% Compiled module: OPENDAP_PARSE_DAS.
+% Compiled module: STRSPLIT.
+% Compiled module: GET_DODS_DATA.
+% Compiled module: DODS_VAR.
+% Compiled module: REVERSE.
+% Temporary variables are still checked out - cleaning up...
+% Compiled module: AGGREGATE.
+% Compiled module: DODS_VARIABLES.
+
+The data is stored in the last parameter passed to cedar_data, the data
+variable.
+
+The 'username' parameter is your username. You must be logged in to the
+CedarWeb data portal in order to use this command. To do that, please go to
+http://cedarweb.hao.ucar.edu and click on the 'Sign In' button in the top
+left of the page.
+
+Please refer to the INSTALL file on instructions for building and testing
+these idl source files.
+

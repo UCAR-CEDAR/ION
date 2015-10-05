@@ -1,0 +1,34 @@
+2008-04-23  Patrick West <pwest@ucar.edu>
+
+	Need NEWS file for release. Contains information about current
+	release.
+	A    NEWS
+
+2008-04-23  Patrick West <pwest@ucar.edu>
+
+	First release of the idl-cedar-client code that is used from the idl
+	command generated on the cedarweb data portal.
+	A    idl-cedar-client
+	A    idl-cedar-client/dods_variables.pro
+	A    idl-cedar-client/COPYRIGHT_UCAR
+	A    idl-cedar-client/configure.ac
+	A    idl-cedar-client/get_kindat_list.pro
+	A    idl-cedar-client/aggregate.pro
+	A    idl-cedar-client/conf
+	AM   idl-cedar-client/conf/mkinstalldirs
+	AM   idl-cedar-client/conf/depcomp
+	AM   idl-cedar-client/conf/missing
+	A    idl-cedar-client/conf/config.guess
+	A    idl-cedar-client/conf/config.sub
+	AM   idl-cedar-client/conf/ltmain.sh
+	AM   idl-cedar-client/conf/install-sh
+	A    idl-cedar-client/cedar_data.pro
+	AM   idl-cedar-client/INSTALL
+	A    idl-cedar-client/opendap_parse_das.pro
+	AM   idl-cedar-client/COPYING
+	A    idl-cedar-client/Makefile.am
+	A    idl-cedar-client/README
+
+;; Local Variables:
+;; coding: utf-8
+;; End:
